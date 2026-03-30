@@ -1,0 +1,94 @@
+# Build artifacts
+*.o
+*.d
+*.obj
+*.dll
+*.exe
+*.so
+*.dylib
+*.a
+*.lib
+*.dylib
+*.bc
+*.wasm
+*.wast
+*.dwarf
+*.sym
+*.map
+*.elf
+*.dol
+*.iso
+*.gcm
+*.tgc
+*.tpl
+*.szs
+*.arc
+*.rarc
+*.brct
+*.bref
+
+# Toolchain caches
+build/
+out/
+obj/
+bin/
+*.build/
+.cache/
+.wibo/
+.wine/
+.dolc
+
+# IDE/editor
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Logs and databases
+*.log
+*.sqlite
+*.db
+
+# Archiving
+*.zip
+*.tar.gz
+*.rar
+*.7z
+
+# Temporary research files (AI/researcher scratch)
+scratch/
+experiments/
+temp/
+tmp/
+
+# OS-specific
+Thumbs.db
+ehthumbs.db
