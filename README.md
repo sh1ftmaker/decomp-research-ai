@@ -20,6 +20,8 @@ This repository consolidates everything you need to understand and contribute to
   - [tail-calls.md](CHALLENGES/tail-calls.md) - Silent optimizer trap
   - [symbols.md](CHALLENGES/symbols.md) - Finding function names via pattern recognition
   - [RTTI.md](CHALLENGES/RTTI.md) - Auto-generating C++ class hierarchies
+- **[WORKFLOW/matching-playbook.md](WORKFLOW/matching-playbook.md)** - Step-by-step playbook for matching functions (empirical techniques for MWCC register allocation)
+- **[AUTOMATION.md](AUTOMATION.md)** - Automated decompilation agent: architecture, pipeline, and findings from running it on Melee
 - **[PORTING/strategies.md](PORTING/strategies.md)** - From matching decompilation to native PC ports (GX→OpenGL/Vulkan, HLE vs reimplementation)
 - **[COMMUNITY/websites.md](COMMUNITY/websites.md)** - Essential hubs: decomp.dev, decomp.me, wikis, Discord servers
 
