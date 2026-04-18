@@ -1,8 +1,12 @@
 # Knowledge Gaps: Discord vs Public Sources
 
 **Analysis Date:** 2026-03-30  
-**Public Coverage:** ~70-75%  
-**Discord-Only Knowledge:** ~25-30%  
+**Updated:** 2026-04-17 — Discord mining complete; gaps reassessed  
+**Public Coverage:** ~70-75% (original estimate)  
+**Post-Discord Coverage:** ~92-95%  
+**Remaining Gaps:** ~5-8%
+
+> **Status Update (2026-04-17):** Discord archives for the doldecomp server have been analyzed (~1.8M lines across 20+ channels). Most critical gaps are now addressed. See `COMMUNITY/discord-tribal-knowledge.md` for the master synthesis and the `COMMUNITY/discord-insights-*.md` files for per-channel detail. Gaps marked ✅ below have been substantially filled.
 
 This document identifies what information is publicly available versus what remains trapped in Discord servers (particularly `ZeldaRET` and `doldecomp`). Use this as a guide for targeted Discord extraction.
 
@@ -11,125 +15,123 @@ This document identifies what information is publicly available versus what rema
 ## 🔴 CRITICAL GAPS (High Impact, Nearly Impossible to Find Publicly)
 
 ### 1. CI/CD & Testing Workflows
-**Status:** ❌ Not found in any public repo
-- Actual `.github/workflows/*.yml` files (all 404'd)
-- Automated matching verification (how do they test CI?)
-- Build matrix configurations (OS, compiler version matrices)
-- Integration testing for multiple games
-- Regression testing strategies
-- Coverage metrics and reporting
+**Status:** ⚠️ Partially addressed by Discord mining
+- ✅ CI runs via GitHub Actions with wibo pre-installed, compilers downloaded from `files.decomp.dev`
+- ✅ `objdiff report generate` → `VERSION_report` artifact → consumed by decomp.dev
+- ✅ dtk-template `.github.example/workflows/build.yml` is the recommended starting point
+- ✅ PR bot downloads objdiff reports from CI artifacts and posts progress comparison comments
+- ❌ Actual YAML config files not in public repos; shared informally
+- ❌ Exact build matrix configurations not documented
 
-**Where to find in Discord:** Search for "CI", "workflows", "testing", "automated", "GitHub Actions"
+**See:** `COMMUNITY/discord-insights-tools.md` §decomp.dev, `COMMUNITY/discord-insights-general.md` §7
 
 ---
 
 ### 2. SDK Version Matrix (Per Game)
-**Status:** ⚠️ Fragmented, no centralized mapping
-- Exact dolphin-sdk versions used per game (1.0 vs 1.2 vs JSystem variants)
-- MWCC compiler versions per library (1.2.5 vs 1.2.5n vs 1.3.2)
-- How to identify SDK version from binary signatures
-- Known incompatibilities between SDK versions
-- Which SDK features require which compiler flags
+**Status:** ✅ Substantially addressed by Discord mining
+- ✅ Full MWCC build stamp registry documented (GC CW 1.0 through Wii CW 1.7)
+- ✅ Per-game compiler versions confirmed (Melee: Build 156/158; AC RELs: 1.3.2; MKDD/MP4: 2.6; MSM audio: 1.2.5)
+- ✅ SDK build string format documented; per-module dates documented
+- ✅ JSystem version per game documented; evolution chain mapped
+- ✅ Community SDK repos catalogued (dolsdk2001, dolsdk2004, sdk_2009-12-11)
+- ✅ How to identify SDK version from binary (build string extraction method)
 
-**Where to find in Discord:** Search "SDK version", "MWCC", "compiler version", "dolphin-sdk", "JSystem"
+**See:** `COMMUNITY/discord-insights-tools.md` §1, `COMMUNITY/discord-insights-libraries.md` §Dolphin SDK
 
 ---
 
 ### 3. Build Error Troubleshooting Reference
-**Status:** ⚠️ Only scattered in issues/chat
-- Common dtk error messages and solutions
-- objdiff configuration pitfalls (when to check/uncheck options)
-- mwldeppc linker errors (deadstrip, extab, weak symbols)
-- Wine/wibo compatibility matrix (OS version → Wine version)
-- "Relax relocations" - when to use vs when it hides real mismatches
-- "Function permutation failed" - causes and fixes
-- "Relocation overflow" - how to split sections
+**Status:** ✅ Substantially addressed by Discord mining
+- ✅ 6 specific dtk error messages documented with causes and fixes
+- ✅ 4 mwldeppc linker errors documented with fixes
+- ✅ devkitPPC r40 breaking change documented with workaround
+- ✅ objdiff startup failure fix (`%APPDATA%\objdiff` deletion)
+- ✅ wibo vs. Wine decision documented with benchmarks
+- ❌ "Relax relocations" edge cases still undocumented
+- ❌ No central troubleshooting guide exists; error diagnosis still done by posting in channel
 
-**Where to find in Discord:** Search specific error messages, "dtk error", "objdiff not updating", "wibo crash"
+**See:** `COMMUNITY/discord-insights-tools.md` §3, `COMMUNITY/discord-insights-general.md` §8, §10
 
 ---
 
 ### 4. Advanced Context File Patterns (m2c)
-**Status:** ⚠️ Basic context generation documented, master patterns hidden
-- Complex JSystem C++ context examples (templates, inheritance)
-- How to handle heavily templated code
-- Multi-game shared context strategies (melee + ttyd both use JSystem)
-- Context file evolution (how to know when to regenerate vs hand-edit)
-- Order-dependent includes and macro conflicts
-- Demangling C++ symbols in context
+**Status:** ✅ Substantially addressed by Discord mining
+- ✅ Context file preprocessing workflow documented (`-E` flag, flattening guards)
+- ✅ Common failure modes: `#ifdef` guards, struct with function pointers, binary literals
+- ✅ `--reg-vars` flag effect documented
+- ✅ `M2C_STRUCT_COPY` semantics documented
+- ✅ Jump table label naming requirements documented
+- ✅ `M2CTX` macro pattern (Melee) for C++ context documented
+- ❌ Complex JSystem template context strategies still partially undocumented
 
-**Where to find in Discord:** Search "context file", "m2c context", "JSystem", "templates", "demangle"
+**See:** `COMMUNITY/discord-insights-tools.md` §4
 
 ---
 
 ## 🟡 SIGNIFICANT GAPS (Useful, Partially Available Publicly)
 
 ### 5. Platform-Specific Quirks
-**Status:** ⚠️ Some documented, many edge cases missing
-- Windows vs macOS vs Linux differences in build times
-- WSL2 limitations (objdiff filesystem notifications don't work)
-- Homebrew vs pip installation differences
-- Wine version requirements (crossover vs vanilla Wine)
-- ARM64 Mac (M1/M2/M3) compatibility issues and Rosetta usage
-- Linux distribution-specific issues (Ubuntu vs Fedora vs Arch)
+**Status:** ✅ Substantially addressed by Discord mining
+- ✅ WSL1 vs WSL2 distinction (WSL1 cannot run 32-bit apps)
+- ✅ WSL filesystem location requirement (`/home/...` not `/mnt/c/`)
+- ✅ devkitPPC r40 breaking change documented
+- ✅ wibo vs. Wine decision documented with benchmarks
+- ✅ macOS Apple Silicon workarounds (VPS, Docker + Wine)
+- ❌ WSL ARM64 compatibility (Snapdragon laptops) unresolved
+- ❌ Linux distro-specific issues not documented
 
-**Public sources:** Basic setup guides mention WSL is discouraged, Wine needed on macOS
-**Discord needed:** Specific error logs, workarounds, version pinning
+**See:** `COMMUNITY/discord-insights-general.md` §3
 
 ---
 
 ### 6. Symbol Resolution Best Practices
-**Status:** ⚠️ File formats documented, workflow not
-- How to systematically find function names from assembly
-- Using map files effectively (which ones are trustworthy)
-- Demangling C++ symbols and reading them
-- Handling weak symbol duplicates across libraries
-- When to use `__destroy` vs `__dt__` naming
-- Decomp.me hints - how reliable are they?
+**Status:** ⚠️ Partially addressed
+- ✅ Symbol map parsing: `cwparse` Rust library documented
+- ✅ Ghidra symbol map import: remove `Offset` column requirement
+- ✅ objdiff right-click → copy mangled name workflow documented
+- ❌ Systematic function naming workflows still Discord-only
+- ❌ Weak symbol duplicate handling not fully documented
 
-**Public sources:** `symbols.txt` format, basic demangling tool
-**Discord needed:** Real workflows, common pitfalls, tool scripts
+**See:** `COMMUNITY/discord-insights-tools.md` §5
 
 ---
 
 ### 7. Code Review Standards & Contribution Guidelines
-**Status:** ❌ Virtually no formal documentation
-- What makes a PR mergeable (matching % thresholds, test requirements?)
-- Commit message format conventions
-- Code style guidelines beyond clang-format (naming, organization)
-- Required testing before PR
-- Review process (who reviews, turnaround time)
-- Handling merge conflicts in active modules
+**Status:** ✅ Substantially addressed by Discord mining
+- ✅ PR requires byte-matching DOL (not individual function matching)
+- ✅ `#ifdef NONMATCHING` required; `#if 0` rejected
+- ✅ Symbol naming conventions documented (CamelCase methods, lowercase C)
+- ✅ Alignment directives (`.balign 8`) requirement documented
+- ✅ Leaked SDK headers: community has unresolved debate; leaked compilers accepted
+- ❌ Per-project PR checklists vary by lead; still learned through submitted PRs
+- ❌ No public CONTRIBUTING.md exists in any major project
 
-**Public sources:** None (no CONTRIBUTING.md found in major repos)
-**Discord needed:** Entirely Discord-based governance
+**See:** `COMMUNITY/discord-insights-general.md` §2
 
 ---
 
 ### 8. Multi-ROM/VERSION Support Strategies
-**Status:** ⚠️ Basic version flags documented, patterns not
-- PAL vs NTSC differences handling (conditional compilation)
-- Managing multiple revisions (Rev0, Rev1, Rev2)
-- Shared code across versions and version-specific overrides
-- `configure.py --version` implementation patterns
-- How to add a new version support
+**Status:** ⚠️ Partially addressed
+- ✅ MusyX version guard pattern documented (`MUSY_VERSION_CHECK`)
+- ✅ EGG version differences documented (`EGG_VERSION 200704L`)
+- ✅ SDK per-module versioning strategy documented
+- ✅ Mario Party 4 tracked both 1.00 and 1.01 build targets
+- ❌ `configure.py --version` implementation patterns not documented
+- ❌ PAL vs NTSC conditional compilation patterns not documented
 
-**Public sources:** Basic `--version` flag usage
-**Discord needed:** Real project examples, debugging version mismatches
+**See:** `COMMUNITY/discord-insights-libraries.md`
 
 ---
 
 ### 9. Testing & Verification Strategies
-**Status:** ⚠️ objdiff usage documented, testing minimal
-- Manual testing procedures after matching
-- Automated testing approaches (any unit tests?)
-- Regression testing when upstream changes
-- How to verify byte-perfect beyond objdiff green
-- Testing rare code paths and edge cases
-- Fuzzing or property-based testing
+**Status:** ⚠️ Partially addressed
+- ✅ Verification method: `objdiff` green + SHA1 hash of built DOL
+- ✅ `ninja baseline` / `ninja changes` targets for regression detection
+- ✅ decomp.dev progress tracking serves as continuous integration feedback
+- ❌ No formal unit testing; no fuzzing practices documented
+- ❌ "Nonsense function" detection (correct bytes, wrong semantics) — only human review
 
-**Public sources:** objdiff UI usage, build verification
-**Discord needed:** Actual QA practices, known untested areas
+**See:** `COMMUNITY/discord-insights-tools.md` §2, §7
 
 ---
 
@@ -161,24 +163,33 @@ This document identifies what information is publicly available versus what rema
 
 ## 📊 DETAILED BREAKDOWN BY TOPIC
 
-| Topic | Public | Discord | Notes |
-|-------|--------|---------|-------|
-| Getting started | 90% | 10% | Guides exist, but current pitfalls not |
-| Tool reference | 80% | 20% | Basic usage clear, edge cases hidden |
-| Workflow | 85% | 15% | Binary split documented, subtleties not |
-| Challenges (6 deep-dives) | 85% | 15% | Theory documented, real cases not |
-| CI/CD | 20% | 80% | ⚠️ Critical gap |
-| SDK matrix | 35% | 65% | ⚠️ Critical gap |
-| Build errors | 40% | 60% | ⚠️ Critical gap |
-| Context patterns | 55% | 45% | ⚠️ Critical gap |
-| Platform quirks | 45% | 55% | Scattered, needs curation |
-| Symbol workflows | 50% | 50% | Format doc'd, process not |
-| Code standards | 25% | 75% | ⚠️ Almost entirely Discord |
-| Multi-version | 40% | 60% | More complex than docs suggest |
-| Testing | 30% | 70% | Minimal formal testing docs |
-| Performance | 35% | 65% | Optimizations shared orally |
-| Debugging | 30% | 70% | Techniques tribal |
-| Legal | 20% | 80% | Policies exist only in Discord |
+*Updated 2026-04-17 after Discord mining*
+
+| Topic | Pre-Discord | Post-Discord | Notes |
+|-------|------------|--------------|-------|
+| Getting started | 90% | 95% | devkitPPC r40 pitfall now documented |
+| Tool reference | 80% | 95% | Build stamps, error table, AI workflows added |
+| Workflow | 85% | 95% | wibo benchmarks, CI pattern documented |
+| Challenges (deep-dives) | 85% | 97% | Peephole bug, gecko_float_typecons, mwcc-debugger |
+| CI/CD | 20% | 70% | Pattern documented; exact YAMLs still private |
+| SDK matrix | 35% | 92% | ✅ Full build stamp registry + per-game mapping |
+| Build errors | 40% | 88% | ✅ 10 specific errors with solutions |
+| Context patterns | 55% | 80% | ✅ m2c workflow, M2CTX pattern documented |
+| Platform quirks | 45% | 90% | ✅ WSL, macOS, devkitPPC versioning |
+| Symbol workflows | 50% | 70% | cwparse, objdiff demangler documented |
+| Code standards | 25% | 80% | ✅ PR standards, NONMATCHING guard, naming |
+| Multi-version | 40% | 70% | Version guards, per-module SDK dates |
+| Testing | 30% | 60% | SHA1 + objdiff; no formal test suite exists |
+| Performance | 35% | 70% | Ninja vs Make benchmarks, wibo vs Wine |
+| Debugging | 30% | 75% | mwcc-debugger fully documented |
+| Legal | 20% | 50% | Community consensus documented; no formal policy |
+| JSystem | 50% | 92% | ✅ Per-game versions, sub-library coverage |
+| EGG | 20% | 90% | ✅ Compiler flags, hierarchy, file map |
+| MusyX | 40% | 95% | ✅ Version registry, game mapping, hardest function |
+| Game: Melee | 70% | 92% | ✅ Compiler, cross-refs, file boundaries |
+| Game: Animal Crossing | 60% | 88% | ✅ N64 architecture, JSystem flags |
+| Game: Mario Party 4 | 50% | 92% | ✅ REL format, Hudson engine, milestones |
+| AI-assisted decomp | 0% | 85% | ✅ Entirely new section from #ai channel |
 
 ---
 

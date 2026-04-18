@@ -89,6 +89,9 @@ experiments/
 temp/
 tmp/
 
+# Discord archives (raw exports — synthesized knowledge lives in COMMUNITY/)
+decomp discord/
+
 # OS-specific
 Thumbs.db
 ehthumbs.db

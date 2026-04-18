@@ -50,19 +50,35 @@
 | **decomp-toolkit (dtk)** | Windows/macOS/Linux | https://github.com/encounter/decomp-toolkit/releases |
 | **objdiff** | Windows/macOS/Linux | https://github.com/encounter/objdiff/releases |
 | **m2c** | Python (any) | https://github.com/matt-kempster/m2c |
-| **Ghidra** | Cross-platform | https://ghidra-sre.org/ |
+| **wibo** | Linux (Wine alternative) | https://github.com/decompals/wibo |
+| **Ghidra (community fork)** | Cross-platform | https://github.com/encounter/ghidra-ci/releases |
+| **Ghidra (mainline)** | Cross-platform | https://ghidra-sre.org/ |
+| **gc-wii-binutils** | Cross-platform | https://github.com/encounter/gc-wii-binutils |
+| **cwparse** | Rust library | CW map file parsing with Python bindings planned |
 | **Dolphin Emulator** | Cross-platform | https://dolphin-emu.org/ |
-| **decomp-permuter** | Rust cargo | https://github.com/encounter/decomp-permuter |
+| **decomp-permuter** | Rust cargo | https://github.com/encounter/decomp-permuter (⚠️ PPC C++ support absent) |
 
 ---
 
-### Shared infra
+### Shared Infrastructure
 
-| Resource | Purpose |
-|-----------|---------|
-| **ghidra.decomp.dev** | Shared Ghidra server (read-only) for project analysis |
-| **decomp.me API** | Scratch API for showing off solutions |
-| **CI Status dashboards** | Each project's GitHub Actions shows progress |
+| Resource | URL | Purpose |
+|-----------|-----|---------|
+| **files.decomp.dev** | https://files.decomp.dev | Compilers archive, CWG, Gekko/Broadway manuals |
+| **ghidra.decomp.dev** | https://ghidra.decomp.dev | Shared Ghidra server — contact moderator for access |
+| **decomp.dev API** | `https://decomp.dev/<owner>/<repo>.json?mode=measures` | Progress metrics; `.svg?mode=shield` for badges |
+| **CExplorer** | https://cexplorer.red031000.com | PPC compiler explorer (sometimes down) |
+| **YAGCD** | https://www.gc-forever.com/yagcd/ | GameCube hardware documentation |
+| **MusyX 2.0 SDK** | https://archive.org/details/musyx-2003-01-09 | MusyX audio middleware source reference |
+
+### Community SDK Repositories
+
+| Repo | SDK Version | Notes |
+|------|------------|-------|
+| [doldecomp/dolsdk2001](https://github.com/doldecomp/dolsdk2001) | Dolphin SDK May 2001 | Melee / Super Monkey Ball era |
+| [doldecomp/dolsdk2004](https://github.com/doldecomp/dolsdk2004) | Dolphin SDK 2004 | Late GC era |
+| [doldecomp/sdk_2009-12-11](https://github.com/doldecomp/sdk_2009-12-11) | RVL SDK Dec 2009 | Last widely-distributed Wii SDK |
+| [doldecomp/dolcp-apr2001](https://github.com/doldecomp/dolcp-apr2001) | Character Pipeline Apr 2001 | — |
 
 ---
 
@@ -100,26 +116,29 @@
 
 ---
 
-## 🎯 What Discord Contains That Public Docs Don't
+## 🎯 Discord Knowledge: Now Captured
 
-You're asking to extract from: https://discord.com/channels/727908905392275526
+The doldecomp Discord archives (~1.8M lines, 20+ channels) were analyzed in April 2026. The tribal knowledge has been synthesized into this repository.
 
-That's likely the `doldecomp` server or a specific game channel.
+**Primary documents:**
+- `COMMUNITY/discord-tribal-knowledge.md` — Master synthesis (all channels)
+- `COMMUNITY/discord-insights-match-help.md` — Register tricks, pragmas, float patterns
+- `COMMUNITY/discord-insights-tools.md` — Compiler registry, objdiff, dtk, m2c, AI workflows
+- `COMMUNITY/discord-insights-games.md` — Melee, Animal Crossing, MKDD, Mario Party 4
+- `COMMUNITY/discord-insights-libraries.md` — JSystem, EGG, MusyX, Dolphin SDK
+- `COMMUNITY/discord-insights-general.md` — Community standards, platform setup, CI/CD
 
-**Typical content that is Discord-only**:
-
-1. **Compiler quirk explanations**: "Why CodeWarrior 1.2.5n generates `fadds` vs `fadd` in this context"
-2. **Function-specific hints**: "For `d_aie_eai_init`, try swapping variable order: `int life, int type`"
-3. **Partial matches shared**: "I got this function 95% but stuck on 3 bytes, here's objdiff screenshot"
-4. **Debug map file sharing**: People upload `.map` files they found
-5. **RTTI discoveries**: "Found new class `fopAc_enemy_c` in debug build, here's structure"
-6. **Tool bug reports**: "objdiff 0.5.3 has issue with x86_64, use 0.5.2"
-7. **Quick polls**: "Should we accept equivalent for this inline?"
-8. **Event announcements**: "Sprint this weekend, focus on TTYD actors"
-9. **Screenshots and GIFs** of matching progress
-10. **Offline resources** (Google Drive links to old SDK docs)
-
-This is the **"tribal knowledge"** you want to capture. But without Discord API access (which requires user token and is rate-limited), you cannot bulk-export.
+**Previously Discord-only knowledge now captured:**
+1. ✅ Full MWCC compiler version registry with build stamps
+2. ✅ Confirmed compiler flags per game
+3. ✅ Peephole optimizer bug (`asm {}` disables peephole for rest of file)
+4. ✅ Undocumented pragmas (found by searching compiler binary)
+5. ✅ SDK build date timeline per game and per module
+6. ✅ EGG/MusyX/JSystem version identification methods
+7. ✅ PR standards, code review expectations
+8. ✅ Platform setup (WSL, macOS, devkitPPC r40 breaking change)
+9. ✅ AI-assisted decompilation workflows
+10. ✅ mwcc-debugger register allocation analysis technique
 
 ---
 
