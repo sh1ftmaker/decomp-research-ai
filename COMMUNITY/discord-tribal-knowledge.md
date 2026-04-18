@@ -1,6 +1,6 @@
 # Discord Tribal Knowledge: Master Synthesis
 
-**Source:** doldecomp Discord server — 5 channel categories, ~1.8M lines analyzed  
+**Source:** GC/Wii Decompilation Discord server — 5 channel categories, ~1.8M lines analyzed  
 **Extracted:** 2026-04-17  
 **Coverage:** #match-help, #compilers, #objdiff, #decomp-toolkit, #m2c, #ai, #tools-general, #decomp-dev, #ghidra, #mwcc-debugger, #jsystem, #egg, #musyx, #sdk, #general, #smash-bros-melee, #animal-crossing, #mario-kart-double-dash, #mario-party, #announcements, #resources  
 **Privacy:** All usernames anonymized. No verbatim quotes reproduced.
@@ -708,4 +708,4 @@ For full detail by topic, see the per-channel analysis files:
 
 ---
 
-*Synthesized from doldecomp Discord archives (2021–2026). All contributor identities anonymized. No verbatim message content reproduced. For current project status, always check live repositories and decomp.dev — this document reflects knowledge as of April 2026.*
+*Synthesized from GC/Wii Decompilation Discord archives (2021–2026). All contributor identities anonymized. No verbatim message content reproduced. For current project status, always check live repositories and decomp.dev — this document reflects knowledge as of April 2026.*

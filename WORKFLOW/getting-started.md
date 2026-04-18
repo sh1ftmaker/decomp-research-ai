@@ -35,7 +35,7 @@ Before diving in, ensure you have:
 | **Mario Party 4** | GameCube | Already 100% - great for learning without pressure | Complete | - |
 | **F-Zero GX** | GameCube | Mid-size, interesting challenges, active | ~25% | zeldaret server |
 | **Metroid Prime** | GameCube | Excellent documentation, but larger | ~35% | PrimeDecomp server |
-| **Kirby Air Ride** | GameCube | Small, simple, good first project | ~40% | doldecomp server |
+| **Kirby Air Ride** | GameCube | Small, simple, good first project | ~40% | GC/Wii Decompilation server |
 
 **Avoid for Now**: Melee (too big/complex), Sunshine (C++ heavy), Zelda games (many already partially done by experts)
 

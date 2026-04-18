@@ -28,7 +28,7 @@
 | **zeldaret TWW Wiki** | Best-in-class tutorials, architecture deep-dives | https://github.com/zeldaret/tww/blob/main/docs/ |
 | **sdbg/dolphin wiki** | Dolphin emulator internals, debugging | https://github.com/sdbg/dolphin/wiki |
 | **Melee Decomp Discord** | Community hub (invite in README) | — |
-| **doldecomp Discord** | General GC/Wii decomp (invite in README) | — |
+| **GC/Wii Decompilation Discord** | General GC/Wii decomp (invite in README) | — |
 
 ---
 
@@ -118,7 +118,7 @@
 
 ## 🎯 Discord Knowledge: Now Captured
 
-The doldecomp Discord archives (~1.8M lines, 20+ channels) were analyzed in April 2026. The tribal knowledge has been synthesized into this repository.
+The GC/Wii Decompilation Discord archives (~1.8M lines, 20+ channels) were analyzed in April 2026. The tribal knowledge has been synthesized into this repository.
 
 **Primary documents:**
 - `COMMUNITY/discord-tribal-knowledge.md` — Master synthesis (all channels)
@@ -304,7 +304,7 @@ This way you **cite** Discord without bulk-exporting it.
 When writing documentation, attribute sources:
 
 ```markdown
-According to the zeldaret TWW wiki[^1] and discussions on the doldecomp Discord[^2], ...
+According to the zeldaret TWW wiki[^1] and discussions on the GC/Wii Decompilation Discord[^2], ...
 
 [^1]: https://github.com/zeldaret/tww/blob/main/docs/decompiling.md
 [^2]: Discord server: https://discord.gg/doldecomp; channel: #tww; date: 2025-03-20

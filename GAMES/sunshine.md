@@ -228,7 +228,7 @@ The `d_kw` module (water) is complex:
 
 ### Community
 
-- **Discord**: `#sunshine` in doldecomp server
+- **Discord**: `#sunshine` in GC/Wii Decompilation server
 - **decomp.me**: Many Sunshine functions available for practice
 
 ---

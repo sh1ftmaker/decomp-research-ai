@@ -287,7 +287,7 @@ Melee has multiple revisions (1.00, 1.01, 1.02, 1.03, 20XX). Code differs slight
 
 ## 🆘 Getting Help
 
-**Discord**: `#melee` channel in doldecomp server
+**Discord**: `#melee` channel in GC/Wii Decompilation server
 
 **Common questions**:
 - "Where to start?" → `#newcomers` or read this file

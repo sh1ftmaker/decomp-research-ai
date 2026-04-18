@@ -1,6 +1,6 @@
 # Discord Insights — Index
 
-This folder contains synthesized knowledge extracted from the doldecomp Discord server (~1.8M lines, 20+ channels, analyzed April 2026).
+This folder contains synthesized knowledge extracted from the GC/Wii Decompilation Discord server (~1.8M lines, 20+ channels, analyzed April 2026).
 
 **All usernames have been anonymized. No raw message content is included. Insights are paraphrased and synthesized.**
 

@@ -1,6 +1,6 @@
 # Discord Insights: General Community Channel
 
-**Source:** Discord server general channel archive (doldecomp community)  
+**Source:** Discord server general channel archive (GC/Wii Decompilation community)  
 **Coverage period:** ~2021 – early 2026  
 **Total messages analyzed:** ~718,000 lines  
 **Confidence:** Medium–High (direct community observation)  
@@ -267,6 +267,6 @@ Topics that came up but for which the public record remains incomplete:
 ---
 
 *Extracted: April 2026*  
-*Source: General channel archive, doldecomp Discord server*  
+*Source: General channel archive, GC/Wii Decompilation Discord server*  
 *Method: Targeted keyword grep analysis across ~718K lines, manual context review of high-signal hits*  
 *Confidence: High for factual tool and workflow claims (direct quotes from multiple contributors); Medium for community sentiment and meta-discussions (reflects channel tone, not formal policy)*

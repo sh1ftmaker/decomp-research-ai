@@ -213,7 +213,7 @@ Ghost behaviors might be scripted (like Melee's move scripts). Not confirmed yet
 
 ## 🆘 Getting Help
 
-Ask in `#luigismansion` on doldecomp Discord.
+Ask in `#luigismansion` on GC/Wii Decompilation Discord.
 
 Small community, but members are helpful. Be patient.
 

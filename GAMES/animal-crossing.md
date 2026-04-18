@@ -250,7 +250,7 @@ Since the project is nearly complete, remaining work is likely **tricky corner c
 
 ## 🆘 Getting Help
 
-**Discord**: `#animalcrossing` in doldecomp server
+**Discord**: `#animalcrossing` in GC/Wii Decompilation server
 
 Given the near-completion, most questions will be about **specific remaining issues** (0.48% remaining). Search Discord history first.
 

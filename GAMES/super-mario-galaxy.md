@@ -273,7 +273,7 @@ This is **the hottest Wii project** right now. Might reach 70% by end of 2025.
 ## 🆘 Getting Help
 
 **Discord**:
-- `doldecomp` server: `#smg` channel (now `#petari`?)
+- GC/Wii Decompilation server: `#smg` channel (now `#petari`?)
 - `SMGCommunity` server (likely separate)
 - `#general` for general decomp questions
 

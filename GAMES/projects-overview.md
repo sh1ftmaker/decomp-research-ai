@@ -327,7 +327,7 @@ These milestones prove that **fully matching decompilation is possible** for lar
 
 If you want to contribute but don't know which project:
 
-1. **Join the Discord** servers (doldecomp, zeldaret, SMGCommunity)
+1. **Join the Discord** servers (GC/Wii Decompilation, zeldaret, SMGCommunity)
 2. **Check `help wanted` issues** on GitHub
 3. **Try decomp.me** to claim a function (scratch work)
 4. **Pick a project** from the "starter" list above

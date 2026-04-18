@@ -6,7 +6,7 @@
 **Post-Discord Coverage:** ~92-95%  
 **Remaining Gaps:** ~5-8%
 
-> **Status Update (2026-04-17):** Discord archives for the doldecomp server have been analyzed (~1.8M lines across 20+ channels). Most critical gaps are now addressed. See `COMMUNITY/discord-tribal-knowledge.md` for the master synthesis and the `COMMUNITY/discord-insights-*.md` files for per-channel detail. Gaps marked ✅ below have been substantially filled.
+> **Status Update (2026-04-17):** Discord archives for the GC/Wii Decompilation server have been analyzed (~1.8M lines across 20+ channels). Most critical gaps are now addressed. See `COMMUNITY/discord-tribal-knowledge.md` for the master synthesis and the `COMMUNITY/discord-insights-*.md` files for per-channel detail. Gaps marked ✅ below have been substantially filled.
 
 This document identifies what information is publicly available versus what remains trapped in Discord servers (particularly `ZeldaRET` and `doldecomp`). Use this as a guide for targeted Discord extraction.
 

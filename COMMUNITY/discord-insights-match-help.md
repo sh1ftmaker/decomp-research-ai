@@ -1,6 +1,6 @@
 # Discord Insights: Match Help Channel
 
-**Source:** doldecomp Discord — `#match-help` channel archive  
+**Source:** GC/Wii Decompilation Discord — `#match-help` channel archive  
 **Archive lines:** ~583,000  
 **Extraction date:** 2026-04-17  
 **Confidence methodology:** Pattern counted across number of independent conversation threads discussing the same technique. All author names anonymized to roles (contributor, maintainer, tool author). No verbatim quotes of conversation are reproduced.
@@ -432,7 +432,7 @@ A function that appears to inline everywhere except one specific caller was trac
 
 ---
 
-*This document was extracted and synthesized from the doldecomp Discord match-help channel archive. All authorship has been anonymized. Patterns are described in general terms without reproducing verbatim conversation.*
+*This document was extracted and synthesized from the GC/Wii Decompilation Discord match-help channel archive. All authorship has been anonymized. Patterns are described in general terms without reproducing verbatim conversation.*
 
 *Confidence levels refer to how many independent threads corroborated each insight:*
 - *High: Appeared in 10+ distinct threads*
