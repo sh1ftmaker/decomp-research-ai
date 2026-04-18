@@ -393,13 +393,160 @@ Let's trace through decompiling one function in Super Mario Sunshine:
 
 ---
 
-## 🔧 Advanced Tools (Less Common)
+## 🔧 Extended Toolchain (Community Tools)
 
-- **decomp-permuter**: Tries permutations of register allocation to match
-- **asm-differ**: Older diff tool (mostly superseded by objdiff)
-- **splat**: Splatting tool for N64 (different ecosystem)
-- **ret-dec**: Generic decompiler (not for matching)
-- **IDA Pro**: Commercial alternative to Ghidra (rarely used in this community)
+### **wibo** — Lightweight Win32 Emulator
+**Repo**: https://github.com/decompals/wibo  
+**Purpose**: Runs 32-bit Windows executables (MWCC, MWLD) on Linux without full Wine overhead.  
+**Performance**: ~2x faster than Wine — one project benchmarked ~12s vs ~25s for a full build.  
+**Install**: Auto-downloaded by dtk-template projects. wibo versions before 0.14 had regressions; always check release notes.  
+**Gap**: Cannot read Windows string resources (used when checking compiler build dates) — fall back to Wine for that specific operation.
+
+---
+
+### **ppc750cl / powerpc** — Rust PPC Disassembler
+**Repo**: https://github.com/encounter/ppc750cl (crate now renamed to `powerpc` on crates.io)  
+**Purpose**: High-performance PowerPC 750CL disassembler and assembler with Python bindings. Originally written for Mario Kart Wii decomp; now the community standard for fast PPC disassembly.  
+**Performance**: Rewritten code generator achieves ~400MB/s disassembly throughput.  
+**Features**: Supports 64-bit PPC, AltiVec, VMX128 (Xbox 360). Includes `.nz` suffix notation for non-zero field disambiguation. Paired with **ppcasm** (https://github.com/encounter/ppcasm) for assembling.  
+**Python bindings**: Expose disassembly to Python-based tooling (ppcdis, dtk analysis).
+
+---
+
+### **MWCC Decomp** — Decompilation of the Compiler Itself
+**Repo**: https://git.wuffs.org/MWCC (branch: `main`, author: Ninji)  
+**Purpose**: A decompilation of Metrowerks CodeWarrior C Compiler targeting classic Mac OS. Invaluable for understanding why MWCC generates specific code — look up the actual compiler source rather than guessing.  
+**Use case**: When a pragma or optimization behavior is undocumented, the MWCC source can confirm exactly what the compiler does. Several undocumented pragma behaviors in our knowledge base were verified this way.
+
+---
+
+### **Ghidra-GameCube-Loader** — GC/Wii Plugin for Ghidra
+**Repo**: https://github.com/Cuyler36/Ghidra-GameCube-Loader  
+**Purpose**: Adds Gekko/Broadway CPU architecture support and DOL/REL/RSO loader to Ghidra. Required for any Ghidra-based GC/Wii analysis.  
+**Note**: Must match the Ghidra version exactly. The community Ghidra CI build (https://github.com/encounter/ghidra-ci/releases) bundles both Ghidra and this loader together — use that instead of assembling them separately.
+
+---
+
+### **RootCubed Ghidra Builds** — Tweaked Ghidra for GC/Wii
+**URL**: https://rootcubed.dev/ghidra_builds/  
+**Purpose**: Custom Ghidra builds with improved decompiler output for PowerPC — better int-to-float conversion, correct paired-single decoding, fixes for float argument passing. Community-preferred over mainline Ghidra for GC/Wii work.  
+**Warning**: Sometimes inaccurate (noted in official resources). Cross-check decompiler output against m2c.
+
+---
+
+### **mwcc-debugger / mwcc-inspector** — MWCC IR Inspection Tool
+**Purpose**: Hooks into the running MWCC binary (via Windows Debugger Engine) and extracts internal compiler IR at specific compilation stages. Primary use: diagnosing register allocation mismatches by inspecting MWCC's virtual register assignments.  
+**Outputs**: `frontend-00-*.txt` (initial AST), `backend-00-initial-code.txt` (unoptimized IR), `gpr-pass-1-all.txt` / `assigned.txt` (register allocation state).  
+**mwcc-inspector**: Newer C# version using `ClrDebug` for direct MWCC memory reading with a clickable IR viewer.  
+**Setup**: Requires WinDbg on Windows. Works best on GC compiler versions.  
+**Key insight from use**: Variables receive virtual register numbers at creation time; lower VRN → lower priority → higher-numbered physical register. The "coalescing bug" (merged temporaries stay in interference graph) can be exploited to shift other variables' priority.
+
+---
+
+### **cwparse** — CW Map File Parser
+**Purpose**: Rust library for parsing CodeWarrior map files. Supports Melee, Pikmin, Pikmin 2, Super Monkey Ball, and Metroid Prime map files with test coverage. Python bindings planned.  
+**Use case**: Progress calculation, detecting symbol order mismatches, generating `objdiff.csv` for the diff workflow.
+
+---
+
+### **ppcdis** — Python DOL/REL Analysis Pipeline
+**Purpose**: Python-based GC/Wii DOL/REL disassembler with smarter relocation inference than raw objdump. Supports Wii RELs. Some projects (particularly those predating dtk) still use ppcdis for their DOL→analysis→object pipeline.  
+**Status**: Active but community consensus is dtk has superseded it for new projects.
+
+---
+
+### **ppc2cpp** — Control Flow and Equivalency Analysis
+**Purpose**: Early-stage C++ tool focusing on equivalency checking and control flow analysis for PPC. Less mature than dtk but explores a different analytical approach.  
+**Repo**: Has a dedicated Discord channel; still in active development at time of archive.
+
+---
+
+### **decomp_agent** — Autonomous Decompilation Pipeline ⭐ (This Repo)
+**Location**: `decomp_agent/` in this repository  
+**Purpose**: Fully automated function-matching pipeline using a state machine, m2c, decomp-permuter, and Claude AI. Designed for Melee but architecture is game-agnostic.
+
+**Architecture**:
+```
+report.json → target_selector → ranked function queue
+                                        ↓
+                               state_db (SQLite)
+                                        ↓
+                  ┌── has placeholder? → m2c → generate initial C
+                  │
+                  └── build (ninja) → diff (objdiff-cli) → classify
+                            ↓
+          MATCHED ──────────────────────────────────────────────── done
+          COMPILE_ERROR → Claude Haiku (syntax fix) → rebuild
+          REGALLOC_ONLY → decomp-permuter → Claude Haiku → rebuild
+          SIZE_MISMATCH → Claude Haiku/Sonnet (logic fix) → rebuild
+```
+
+**Key design decisions**:
+- AI gets minimal context (~1500 tokens): assembly + current C + diff + 1 nearby matched function
+- Permuter handles register allocation first; AI only as fallback
+- Model escalation: Haiku for first 2 attempts, Sonnet for attempt 3+
+- Parallelizes by translation unit (same `.c` file serialized, different files parallel)
+- SQLite state tracking prevents duplicate work across runs
+- Token budget per function (default 50,000 tokens) prevents runaway cost
+
+**Empirical findings** (from Melee run):
+- Top-ranked unmatched functions are almost all `REGALLOC_ONLY` — logic is correct, only register assignment differs
+- Variable reuse (one variable for multiple purposes) is the most effective single regalloc trick
+- Estimated cost for all 1845 Melee unmatched functions: ~$5 Haiku + ~21 CPU-hours permuter
+
+**Usage**:
+```bash
+# See top targets
+python3 -m decomp_agent.target_selector
+
+# Dry run
+python3 -m decomp_agent.orchestrator --dry-run --limit 10
+
+# Run 5 functions
+python3 -m decomp_agent.orchestrator --limit 5
+
+# Full parallel run
+python3 -m decomp_agent.orchestrator --workers 4 --permuter-timeout 600
+```
+
+**Config** (`decomp_agent/config.py`): Update `melee_root`, `permuter_root`, `api_key` for your project.
+
+---
+
+### **asm-differ** — Legacy Diff Tool
+Older assembly diff tool. Mostly superseded by objdiff but still used in some projects not yet migrated. `--write-asm` output requires preprocessing before feeding to m2c (`@ha`/`@l` annotations are mangled by objdump).
+
+---
+
+## 🌐 Online Tools
+
+| Tool | URL | Purpose |
+|------|-----|---------|
+| **decomp.me** | https://decomp.me | Collaborative matching scratchpad; GC/Wii compiler support added late 2021 |
+| **CExplorer** | https://cexplorer.red031000.com | PPC compiler explorer — test compiler flags/versions interactively (sometimes down) |
+| **rlwinm Decoder** | https://celestialamber.github.io/rlwinm-clrlwi-decoder/ | Decode `rlwinm`/`rlwimi`/`rlwnm` to human-readable bit operations — essential for packed-field code |
+| **C Math Evaluator** | https://roeming.github.io/C-Math-Evaluator/ | Evaluate and graph C math statements to understand their purpose — useful for float approximations |
+| **m2c online** | https://simonsoftware.se/other/m2c.html | Quick m2c decompilation without local setup |
+| **ghidra.decomp.dev** | https://ghidra.decomp.dev | Community shared Ghidra server; contact a moderator for access |
+| **decomp.dev** | https://decomp.dev | Progress tracking for all active GC/Wii projects; 0.5% minimum to appear |
+
+---
+
+## 📚 Reference Documentation
+
+All hosted at `files.decomp.dev` (always-current links):
+
+| Document | URL | Notes |
+|----------|-----|-------|
+| **GC/Wii Compilers Archive** | https://files.decomp.dev/compilers_latest.zip | All MWCC versions; auto-downloaded by dtk-template |
+| **IBM PPC Compiler Writer's Guide** | https://files.decomp.dev/IBM_PPC_Compiler_Writer's_Guide-cwg.pdf | Most-referenced document for unusual assembly patterns |
+| **IBM PPC Programming Environments** | https://files.decomp.dev/PowerPCProgEnv.pdf | Register conventions, calling ABI, memory model |
+| **IBM PPC ISA (Generic)** | https://files.decomp.dev/ppc_isa.pdf | Full instruction set reference |
+| **Gekko User Manual (GameCube)** | https://files.decomp.dev/GekkoUserManual.pdf | GC-specific CPU extensions (paired singles, etc.) |
+| **Broadway User Manual (Wii)** | https://files.decomp.dev/BroadwayUserManual.pdf | Wii CPU reference |
+| **E500 ABI Guide** | https://files.decomp.dev/E500ABIUG.pdf | PPC EABI calling conventions reference |
+| **YAGCD** | https://www.gc-forever.com/yagcd/ | GameCube hardware documentation |
+| **Learn PowerPC (Wii Cheat Codes)** | https://mariokartwii.com/showthread.php?tid=1114 | Beginner-to-advanced PPC tutorials from the modding community |
 
 ---
 
