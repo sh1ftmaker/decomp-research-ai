@@ -8,15 +8,16 @@
 
 | Source Type | Count | % of Total |
 |-------------|-------|------------|
-| **GitHub Repos** | 25 | 45% |
-| **Discord (quoted)** | 12 | 22% |
-| **Project Wikis** | 8 | 15% |
-| **Official Docs** | 6 | 11% |
-| **Forums/Reddit** | 3 | 5% |
-| **Blogs** | 1 | 2% |
-| **Total** | 55 | 100% |
+| **GitHub Repos** | 25 | 37% |
+| **Discord (quoted)** | 12 | 18% |
+| **Discord Synthesis Files (`COMMUNITY/`)** | 13 | 19% |
+| **Project Wikis** | 8 | 12% |
+| **Official Docs** | 6 | 9% |
+| **Forums/Reddit** | 3 | 4% |
+| **Blogs** | 1 | 1% |
+| **Total** | 68 | 100% |
 
-**Last updated**: 2025-03-29
+**Last updated**: 2026-04-19 (added 13 Discord synthesis files from April 2026 archive analysis)
 
 ---
 
@@ -81,6 +82,26 @@ Discord content is ephemeral; we quote specific insights with timestamps.
 | DC-011 | `#debugging` (doldecomp) | Tail-call optimization flags | 2025-03-17 | 🟢 maintainer | `encounter` confirmed `-fgc-shrink-wrap` needed |
 | DC-012 | `#general` (zeldaret) | Wii RARC vs GC RARC differences | 2025-03-16 | 🟢 maintainer | `zsrtp` explained `.szs` compression on Wii |
 
+### Discord Synthesis Files (April 2026, in `COMMUNITY/`)
+
+These files are large-scale synthesized extractions of two Discord servers — paraphrased and anonymized, no raw message content reproduced. They are the primary source for the Discord-Sourced Discoveries cited throughout the repo. Combined: ~2,415 lines of synthesis from ~1.8M lines of Discord conversation.
+
+| ID | File | Source Server / Channels | Lines | Credibility |
+|----|------|--------------------------|-------|-------------|
+| DS-001 | `COMMUNITY/discord-tribal-knowledge.md` | GC/Wii Decompilation — master synthesis (all channels) | ~580 | 🟡 community-verified |
+| DS-002 | `COMMUNITY/discord-insights-match-help.md` | GC/Wii — `#match-help` | 440 | 🟡 community-verified |
+| DS-003 | `COMMUNITY/discord-insights-tools.md` | GC/Wii — `#compilers`, `#objdiff`, `#decomp-toolkit`, `#m2c`, `#ai`, `#ghidra`, `#mwcc-debugger` | 460 | 🟡 community-verified |
+| DS-004 | `COMMUNITY/discord-insights-games.md` | GC/Wii — `#smash-bros-melee`, `#animal-crossing`, `#mario-kart-double-dash`, `#mario-party` | 270 | 🟡 community-verified |
+| DS-005 | `COMMUNITY/discord-insights-libraries.md` | GC/Wii — `#jsystem`, `#egg`, `#musyx`, `#sdk` | 392 | 🟡 community-verified |
+| DS-006 | `COMMUNITY/discord-insights-general.md` | GC/Wii — `#general`, `#announcements`, `#resources` | 273 | 🟡 community-verified |
+| DS-007 | `COMMUNITY/zelda-insights-tww.md` | Zelda Decompilation — `#tww-decomp`, `#tww-decomp-help` (~80K msgs) | ~155 | 🟡 community-verified |
+| DS-008 | `COMMUNITY/zelda-insights-m2c.md` | Zelda Decompilation — `#m2c` | — | 🟡 community-verified |
+| DS-009 | `COMMUNITY/zelda-insights-permuter.md` | Zelda Decompilation — `#permuter` | — | 🟡 community-verified |
+| DS-010 | `COMMUNITY/zelda-insights-decomp-me.md` | Zelda Decompilation — `#decomp-me` (~8.3K msgs, 2021–22) | ~165 | 🟡 community-verified |
+| DS-011 | `COMMUNITY/zelda-insights-ido-decomp.md` | Zelda Decompilation — `#ido-decomp` | — | 🟡 community-verified |
+| DS-012 | `COMMUNITY/zelda-insights-framework.md` | Zelda Decompilation — `#decomp-framework` (~2.1K msgs, 2020) | ~158 | 🟡 community-verified |
+| DS-013 | `COMMUNITY/zelda-insights-tools-other.md` | Zelda Decompilation — `#tools-other` | — | 🟡 community-verified |
+
 ### Project Wikis (Official/Community-Verified)
 
 | ID | Wiki URL | Topics | Date Accessed | Credibility | Notes |
@@ -126,19 +147,29 @@ Which sources contributed to each file in this repository:
 
 | Document | Primary Sources | Secondary Sources |
 |----------|-----------------|-------------------|
-| `README.md` | GH-001, GH-004, GH-008, WK-004 | GH-013-016, DC-001-012 |
-| `TOOLS/overview.md` | GH-013-016, GH-019 | GH-017-018, WK-007-008, DC-001 |
-| `WORKFLOW/getting-started.md` | GH-001, GH-002, GH-006, GH-008 | GH-003-005, GH-010-012 |
-| `WORKFLOW/matching-process.md` | GH-013, GH-014, DC-005 | GH-016, WK-004 |
-| `CHALLENGES/register-allocation.md` | GH-014 (objdiff docs), DC-005 | GH-013, melee wiki |
-| `CHALLENGES/inlines.md` | GH-002 wiki, GH-007 wiki | DC-002 |
-| `CHALLENGES/switches.md` | GH-016 (m2c docs), GH-014 docs | Generic decomp knowledge |
-| `CHALLENGES/tail-calls.md` | DC-011, GH-013 docs | GH-016 |
-| `CHALLENGES/symbols.md` | GH-007, GH-010 wikis | GH-014, decomp.me |
-| `CHALLENGES/RTTI.md` | GH-009, DC-003 | GH-007 wiki |
+| `README.md` | GH-001, GH-004, GH-008, WK-004 | GH-013-016, DC-001-012, DS-001 |
+| `CLAUDE.md` | DS-001 (master), all DS-* files | All GH repos for cross-verification |
+| `TOOLS/overview.md` | GH-013-016, GH-019, DS-003 | GH-017-018, WK-007-008, DS-001 |
+| `WORKFLOW/getting-started.md` | GH-001, GH-002, GH-006, GH-008, DS-006 | GH-003-005, GH-010-012, DS-001 |
+| `WORKFLOW/matching-process.md` | GH-013, GH-014, DC-005, DS-006 | GH-016, WK-004, DS-001 |
+| `WORKFLOW/matching-playbook.md` | DS-002, DS-003 (mwcc-debugger) | GH-014, DS-001 |
+| `WORKFLOW/offline-mode.md` | DS-010 (decomp.me design rationale) | DS-003 |
+| `CHALLENGES/register-allocation.md` | GH-014 (objdiff docs), DC-005, DS-002 | GH-013, melee wiki, DS-009 |
+| `CHALLENGES/inlines.md` | GH-002 wiki, GH-007 wiki, DS-002 | DC-002, DS-005 |
+| `CHALLENGES/switches.md` | GH-016 (m2c docs), GH-014 docs, DS-002 | DS-001 |
+| `CHALLENGES/tail-calls.md` | DC-011, GH-013 docs, DS-002 (3.0a3+ rule) | GH-016, DS-001 |
+| `CHALLENGES/symbols.md` | GH-007, GH-010 wikis, DS-003 (cwparse) | GH-014, decomp.me, DS-013 |
+| `CHALLENGES/RTTI.md` | GH-009, DC-003, DS-005 (EGG/NW4R fingerprints) | GH-007 wiki, DS-004 |
 | `PORTING/strategies.md` | GH-012, GH-014 (examples) | DC-004, WK-001 |
-| `COMMUNITY/websites.md` | All GH repos, WK-004-008, DC-001-012 | GH-022-025 |
-| `GAMES/*.md` (each) | Respective GH repo + wiki | Community consensus, DC channels |
+| `COMMUNITY/websites.md` | All GH repos, WK-004-008, DC-001-012, DS-001 | GH-022-025 |
+| `GAMES/melee.md` | GH-001 + DS-004 §Melee | FRAY, m-ex, Killer7 leak (cross-refs in DS-004) |
+| `GAMES/animal-crossing.md` | DS-004 §AC | DS-005 (JSystem version notes) |
+| `GAMES/mario-kart-double-dash.md` | DS-004 §MKDD | DS-001 (MWCC build registry) |
+| `GAMES/mario-party-4.md` | DS-004 §MP4 | DS-005 (MusyX submodule pattern) |
+| `GAMES/zelda-tww.md` | GH-007 + DS-007 | DS-001 (weak-function ordering) |
+| `GAMES/pikmin.md` | DS-005 §JSystem (Pikmin 1/2 historical role) | DS-001 |
+| `GAMES/super-mario-galaxy.md` | DS-005 §EGG/NW4R, DS-001 §SMG flags | GH-010 |
+| `GAMES/*.md` (other) | Respective GH repo + wiki | Community consensus, DC channels |
 
 ---
 

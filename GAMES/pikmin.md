@@ -2,6 +2,29 @@
 
 *Plant, grow, and conquer! 🌱*
 
+> **See also (Discord-sourced detail):** `COMMUNITY/discord-insights-libraries.md` §"JSystem", `COMMUNITY/discord-tribal-knowledge.md` §"JSystem-Specific Knowledge"
+> — full JSystem version landscape, sub-library matching strategies, vtable-ordering pitfalls.
+
+---
+
+## 🔑 Pikmin's Place in JSystem History
+
+Pikmin 1 and Pikmin 2 are **historically important reference points** for any JSystem-based decomp:
+
+- **Pikmin 1's `JAudio`** is the **only known case** where a JSystem sub-library uses `-proc 750` instead of `-proc gekko`. The processor flag differs from the rest of the game.
+- **Pikmin 2's `JSupport`** was the **first JSystem sub-library to reach 100% matching** in any project — its patterns are replicated across MKDD, AC, TWW.
+- **Pikmin 2's JSystem version** is the **modern reference** for `JKernel`, `JUtility`, `JParticle`, `J2D`. Animal Crossing uses an **older** version with a different `JKRHeap` vtable layout — don't cross-port struct definitions blindly.
+- **`JMessage`** is mostly uncharted **outside** TP and Pikmin 2 — if your project uses it, Pikmin 2's headers are the practical starting point.
+
+## 🔑 Confirmed Compiler Flags (Pikmin 2)
+
+```
+-Cpp_exceptions off -proc gekko -RTTI off -fp hard -fp_contract on -rostr
+-O4,p -use_lmw_stmw on -sdata 8 -sdata2 8 -nodefaults -msgstyle gcc
+```
+
+Note `-sdata 8 -sdata2 8` (not the default 4) — this matches the broader JSystem `.sdata` threshold pattern.
+
 ---
 
 ## 📊 Project Overview

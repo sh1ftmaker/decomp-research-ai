@@ -25,17 +25,31 @@ This repository consolidates everything you need to understand and contribute to
 - **[PORTING/strategies.md](PORTING/strategies.md)** - From matching decompilation to native PC ports (GX→OpenGL/Vulkan, HLE vs reimplementation)
 - **[COMMUNITY/websites.md](COMMUNITY/websites.md)** - Essential hubs: decomp.dev, decomp.me, wikis, Discord servers
 
-### Knowledge Gaps & Discord Content
+### Discord-Sourced Knowledge (April 2026 synthesis)
 
-⚠️ **Important**: This repository covers ~75% of needed knowledge from public sources. The remaining 25% lives in Discord servers.
+The `COMMUNITY/` folder now contains ~2,415 lines synthesized from ~1.8M lines of Discord conversation across the GC/Wii Decompilation and Zelda Decompilation servers. **Read these alongside the topic-specific docs** — they contain knowledge that was Discord-only until April 2026.
 
-See **[GAPS.md](GAPS.md)** for a detailed analysis of:
-- What information is publicly available vs Discord-only
-- 14 specific knowledge gaps (critical, significant, minor)
-- Priority list for Discord extraction
-- Search keywords to find hidden knowledge
+- **[COMMUNITY/discord-insights-README.md](COMMUNITY/discord-insights-README.md)** — Index of all 13 synthesis files
+- **[COMMUNITY/discord-tribal-knowledge.md](COMMUNITY/discord-tribal-knowledge.md)** — Master synthesis: MWCC build registry, per-game flags, pragma reference, critical discoveries
+- **[COMMUNITY/discord-insights-match-help.md](COMMUNITY/discord-insights-match-help.md)** — Regalloc tricks, inline patterns, switch tables, float idioms
+- **[COMMUNITY/discord-insights-tools.md](COMMUNITY/discord-insights-tools.md)** — Tooling deep-dive: objdiff, dtk, m2c, Ghidra fork, mwcc-debugger
+- **[COMMUNITY/discord-insights-games.md](COMMUNITY/discord-insights-games.md)** — Per-game architectural notes (Melee, AC, MKDD, MP4)
+- **[COMMUNITY/discord-insights-libraries.md](COMMUNITY/discord-insights-libraries.md)** — JSystem, EGG, MusyX, Dolphin/RVL SDK version registries
+- **[COMMUNITY/discord-insights-general.md](COMMUNITY/discord-insights-general.md)** — Onboarding, PR standards, platform setup (WSL, macOS, devkitPPC r39 vs r40)
+- **[COMMUNITY/zelda-insights-tww.md](COMMUNITY/zelda-insights-tww.md)** — Wind Waker multi-version matching
+- **[COMMUNITY/zelda-insights-decomp-me.md](COMMUNITY/zelda-insights-decomp-me.md)** — decomp.me architecture (Django+React+nsjail)
+- **[COMMUNITY/zelda-insights-permuter.md](COMMUNITY/zelda-insights-permuter.md)** — decomp-permuter internals (and PPC support gap)
+- **[COMMUNITY/zelda-insights-m2c.md](COMMUNITY/zelda-insights-m2c.md)**, **[zelda-insights-ido-decomp.md](COMMUNITY/zelda-insights-ido-decomp.md)**, **[zelda-insights-framework.md](COMMUNITY/zelda-insights-framework.md)**, **[zelda-insights-tools-other.md](COMMUNITY/zelda-insights-tools-other.md)** — N64-adjacent tooling that informs GC/Wii practice
 
-**Bottom line**: You can get 70-75% of the way with these docs. The last 25% requires joining Discord and manually curating insights from conversations.
+### Knowledge Gaps
+
+✅ **Coverage is now ~92–95%** after the April 2026 synthesis. Most original gaps (SDK matrix, build error reference, m2c context, platform quirks, code review standards) are filled.
+
+See **[GAPS.md](GAPS.md)** for the residual ~5–8%:
+- PPC permuter (does not exist publicly)
+- Exact CI/CD YAML files
+- Per-project PR checklists
+- Live in-progress Discord conversation
 
 ### Game-Specific Notes (12 Major Projects)
 
@@ -71,10 +85,11 @@ Also included: **[GAMES/projects-overview.md](GAMES/projects-overview.md)** - Ma
 
 ## 🚀 Quick Start
 
-**Read** [TOOLS/overview.md](TOOLS/overview.md) to understand the toolchain
-**Read** [WORKFLOW/offline-mode.md](WORKFLOW/offline-mode.md) if you can't use Discord or decomp.me
-**Read** [WORKFLOW/getting-started.md](WORKFLOW/getting-started.md) for standard first steps
-4. **Bookmark** [COMMUNITY/websites.md](COMMUNITY/websites.md) for help
+1. **Read** [TOOLS/overview.md](TOOLS/overview.md) to understand the toolchain
+2. **Read** [WORKFLOW/getting-started.md](WORKFLOW/getting-started.md) for standard first steps
+3. **Skim** [COMMUNITY/discord-tribal-knowledge.md](COMMUNITY/discord-tribal-knowledge.md) for the eight critical Discord-sourced discoveries
+4. **Read** [WORKFLOW/offline-mode.md](WORKFLOW/offline-mode.md) if you can't use Discord or decomp.me
+5. **Bookmark** [COMMUNITY/websites.md](COMMUNITY/websites.md) for live community links
 
 ---
 
@@ -118,15 +133,15 @@ See [TOOLS/overview.md](TOOLS/overview.md) for detailed installation and configu
 
 ## 🤝 Community Platforms
 
-Most knowledge lives in Discord (not documented here due to access constraints):
+A large historical slice of Discord knowledge has been synthesized into `COMMUNITY/discord-*` and `COMMUNITY/zelda-insights-*`. For *live* questions, join the relevant server:
 
-- **doldecomp** - https://discord.gg/doldecomp (Melee, Sunshine, MKDD, etc.)
-- **zeldaret** - https://discord.gg/zeldaret (Zelda series)
+- **GC/Wii Decompilation** (formerly doldecomp) - https://discord.gg/doldecomp (Melee, Sunshine, MKDD, etc.)
+- **zeldaret** - https://discord.gg/zeldaret (Zelda series, m2c, decomp.me, decomp-permuter)
 - **PrimeDecomp** - https://discord.gg/PrimeDecomp (Metroid Prime)
 - **SMGCommunity** - (Galaxy) link in repo
 - **decomp.dev** - https://decomp.dev/discord (meta discussion)
 
-**See** [COMMUNITY/websites.md](COMMUNITY/websites.md) for full directory.
+**See** [COMMUNITY/websites.md](COMMUNITY/websites.md) for the full directory and [COMMUNITY/discord-insights-README.md](COMMUNITY/discord-insights-README.md) for the offline knowledge index.
 
 ---
 
@@ -199,7 +214,21 @@ decompresearch/
 ├── PORTING/
 │   └── strategies.md         # From decomp to PC port (19.8KB)
 ├── COMMUNITY/
-│   └── websites.md          # Tools, Discords, resources (14.7KB)
+│   ├── websites.md          # Tools, Discords, resources
+│   ├── discord-insights-README.md       # Index of Discord synthesis
+│   ├── discord-tribal-knowledge.md      # Master synthesis (all channels)
+│   ├── discord-insights-match-help.md   # Regalloc/inline/switch/float patterns
+│   ├── discord-insights-tools.md        # MWCC registry, mwcc-debugger, etc.
+│   ├── discord-insights-games.md        # Per-game architecture notes
+│   ├── discord-insights-libraries.md    # JSystem/EGG/MusyX/SDK versions
+│   ├── discord-insights-general.md      # Onboarding, PR standards, setup
+│   ├── zelda-insights-tww.md            # Wind Waker matching specifics
+│   ├── zelda-insights-m2c.md            # m2c (PPC support history)
+│   ├── zelda-insights-permuter.md       # decomp-permuter internals
+│   ├── zelda-insights-decomp-me.md      # decomp.me architecture
+│   ├── zelda-insights-ido-decomp.md     # IDO compiler RE
+│   ├── zelda-insights-framework.md      # N64 framework debates
+│   └── zelda-insights-tools-other.md    # diff.py, Ghidra, IDA, n64split
 └── GAMES/
     ├── template.md          # Template for new games
     ├── projects-overview.md # Master table of all projects (14.8KB)
@@ -222,6 +251,7 @@ decompresearch/
 ## 📈 Status & Maintenance
 
 **Created**: March 2025 by Hermes (AI agentic assistant)
+**Last major update**: April 2026 — Discord knowledge synthesis integrated across all docs (~1.8M lines analyzed, ~2,415 lines synthesized).
 
 **License**: This documentation is CC-BY-SA 4.0 (you can share/adapt with attribution).
 
@@ -300,10 +330,12 @@ Which game should you work on?
 
 This repo is **topic-based**, not sequential. Use search:
 
-- **Tool setup issues** → [TOOLS/overview.md](TOOLS/overview.md)
-- "My function doesn't match" → [CHALLENGES/register-allocation.md](CHALLENGES/register-allocation.md)
+- **Tool setup issues** → [TOOLS/overview.md](TOOLS/overview.md) + [COMMUNITY/discord-insights-tools.md](COMMUNITY/discord-insights-tools.md)
+- **"My function doesn't match"** → [CHALLENGES/register-allocation.md](CHALLENGES/register-allocation.md) + [COMMUNITY/discord-insights-match-help.md](COMMUNITY/discord-insights-match-help.md)
+- **MWCC version / build stamp questions** → [COMMUNITY/discord-tribal-knowledge.md](COMMUNITY/discord-tribal-knowledge.md)
+- **JSystem/EGG/MusyX/SDK version** → [COMMUNITY/discord-insights-libraries.md](COMMUNITY/discord-insights-libraries.md)
 - **Want to port to PC** → [PORTING/strategies.md](PORTING/strategies.md)
-- **Specific game questions** → [GAMES/<game>.md](GAMES/)
+- **Specific game questions** → [GAMES/<game>.md](GAMES/) + [COMMUNITY/discord-insights-games.md](COMMUNITY/discord-insights-games.md)
 - **What projects exist?** → [GAMES/projects-overview.md](GAMES/projects-overview.md)
 - **Need help from humans** → [COMMUNITY/websites.md](COMMUNITY/websites.md)
 

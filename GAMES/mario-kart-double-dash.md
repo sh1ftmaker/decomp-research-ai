@@ -2,6 +2,51 @@
 
 *The only 8-player GameCube racer... getting closer to the finish line! 🏎️*
 
+> **See also (Discord-sourced detail):** `COMMUNITY/discord-insights-games.md` §"Mario Kart: Double Dash"
+> — Kaneshige boolean style, debug-vs-release source divergence (`isDefaultCharCombi`, `getKartInfo`), JSystem "phantom compiler" issue (1.3.2 vs 2.6 within the same TU), common-BSS inflation bug (`JASFakeMatch.h`), `gKartPad1P` size discrepancy.
+
+---
+
+## 🔑 Code Organization: by Programmer, Not by Subsystem
+
+MKDD's symbol map reveals a unique organization — **archive libraries named after the original Nintendo developers**. When picking a contribution target, this matters more than typical engine layering:
+
+| Library | Owner | Content |
+|---------|-------|---------|
+| `KaneshigeM.a` | Kaneshige | Race manager (`RaceMgr.cpp`), kart logic, course code, UI. **Largest module.** |
+| `OsakoM.a` | Osako | Input handling (`kartPad.cpp`), resource manager |
+| `YamamotoM.a` | Yamamoto | Physics & camera (`kartvec.cpp`, `KartPerCam.cpp`) |
+| `SatoM.a` | Sato | Math utilities (custom `SpeedySqrtf`) |
+| `BandoM.a` | Bando | **100% complete** (very small) |
+| `KamedaM.a`, `InagakiM.a`, `KawanoM.a`, `ShirawaM.a` | various | Mostly untouched as of late-stage progress reports |
+
+## 🔑 Multiple Compiler Presets in One DOL
+
+MKDD is one of the projects where **a single DOL uses multiple MWCC flag combinations**. Each module needs its own decomp.me preset:
+
+| Module | Flags |
+|--------|-------|
+| Kaneshige | `-O4,p` (speed) |
+| JMath release | `-O4,s -peephole off` (size, no peephole) |
+| JMath debug | `-O4,p` |
+| OsakoM input handling | some files at `-O0` |
+| MSM audio library | older compiler, **MWCC 1.2.5** |
+| Main game | **MWCC 2.6** |
+
+The game ships **both Debug and Release** (`MarioClub_us`) builds, and **some functions require different C source code** to match across the two — the `getKartInfo()` accessor is a documented `#ifdef DEBUG` case.
+
+## 🔑 Kaneshige Boolean Style (Mandatory for Matching)
+
+Kaneshige's code uses a non-idiomatic boolean pattern. Direct `return cond;` will **not** match — you must reproduce:
+
+```c
+bool ret = false;
+if (cond) ret = true;
+return ret;
+```
+
+This applies almost universally to boolean returns in Kaneshige modules. Loop early-exit/early-continue patterns are similarly ritualized.
+
 ---
 
 ## 📊 Project Overview

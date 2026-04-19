@@ -2,6 +2,22 @@
 
 *Why functions that don't exist in the binary can be the hardest to match, and how to handle them.*
 
+> **See also (Discord-sourced detail):**
+> - `COMMUNITY/discord-insights-match-help.md` §"Inlining and IPA" — `-ipa file` (MWCC 3.0+), inline-depth pragmas
+> - `COMMUNITY/discord-tribal-knowledge.md` §"Macro vs. Inline: The `__LINE__` Test" — quick distinction technique
+> - `COMMUNITY/discord-insights-libraries.md` — JSystem/EGG header-only inline patterns and vtable-ordering pitfalls
+
+---
+
+## ⚡ Quick Distinction: Inline vs. Macro (`__LINE__` Test)
+
+When you see an assert-like call site in `.rodata` strings, the embedded `__LINE__` value tells you which it is:
+
+- **Same line number across all call sites** → it was an **inline function** (line fixed at the definition site).
+- **Different line number per call site** → it was a **macro** (each expansion captures its own line).
+
+This is a reliable, no-rebuild-required test. Use it before sinking time into either matching path.
+
 ---
 
 ## ⚠️ What Are Inline Functions?
@@ -161,6 +177,8 @@ int x = some_inline_function(some_value, offset);
    Check if project uses `always_inline` macros (often `FORCE_INLINE`).
 
 3. **Don't prevent inlining**: Avoid `__attribute__((noinline))`.
+
+4. **Check `-ipa file` (MWCC 3.0+ only)**: Many Wii projects (Galaxy, MKW, EGG) compile with `-ipa file`, which enables inter-procedural analysis across the whole translation unit. This **changes the order in which inlined function bodies are emitted** and can flip whether a body is inlined at all. Symptom: a function matches on decomp.me but not in your local build (or vice versa). Check whether the project's flags include `-ipa file` — and remember it does **nothing** on MWCC 1.2.5/1.3.2/2.x. See `COMMUNITY/discord-insights-match-help.md` §"Inlining and IPA" for the per-game flag matrix.
 
 **Test**: After replacing, rebuild and check assembly. The call should disappear and the inline's code should appear again **exactly** like before (except maybe registers).
 

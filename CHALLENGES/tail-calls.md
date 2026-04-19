@@ -2,6 +2,24 @@
 
 *Why functions that end with a call to another function break matching, and how to handle them.*
 
+> **See also (Discord-sourced detail):**
+> - `COMMUNITY/discord-insights-match-help.md` §"Tail Calls" — confirms MWCC pre-3.0a3 does **not** emit tail calls
+> - `COMMUNITY/discord-tribal-knowledge.md` §"MWCC Build Stamp Registry" — full version-to-game mapping
+
+---
+
+## 🧭 First Question: Could Your Compiler Even Have Emitted This?
+
+A `b symbol` (unconditional branch to another function) at the end of a function instead of `bl symbol` + `blr` is a tail-call optimization. Crucially:
+
+> **MWCC versions before 3.0a3 do not generate tail calls at all.**
+
+If your project uses MWCC 1.2.5n, 1.3.2, 2.4.2, 2.6, 2.7, etc., and you see a `b funcB` at the end of a function, **it is not a tail-call optimization** — the splitter is wrong, or the function legitimately ends there and `funcB` is the next separate function. Don't waste hours trying to coerce a non-tail-calling compiler into emitting one.
+
+If your project uses MWCC 3.0a3, 3.0a5, or later (most Wii titles), tail calls are real and you'll need the splitting workarounds in this guide.
+
+A useful corollary: if a binary contains genuine tail calls, you can **lower-bound the compiler version** at 3.0a3.
+
 ---
 
 ## ⚠️ What Is a Tail Call?

@@ -2,6 +2,27 @@
 
 *How to use C++ RTTI (Runtime Type Information) to automatically generate class definitions, vtables, and inheritance hierarchies in GameCube/Wii games.*
 
+> **See also (Discord-sourced detail):**
+> - `COMMUNITY/discord-insights-libraries.md` §"EGG Library" — RTTI strings as the **primary detection signal** for which middleware a Wii game uses (`EGG::ExpHeap::create`, `eggExpHeap`, etc.)
+> - `COMMUNITY/discord-insights-libraries.md` §"NW4R" — `nw4r::math::VEC3`, `nw4r::ut::List_Init` and other RTTI-discoverable inheritance roots
+> - `COMMUNITY/discord-tribal-knowledge.md` §"Animal Crossing" — case study of RTTI-string ordering causing 99% → blocking mismatch
+> - `COMMUNITY/discord-insights-games.md` — per-game RTTI availability notes
+
+---
+
+## 🔍 RTTI Strings as Library Fingerprints
+
+Before reconstructing a class hierarchy, RTTI strings tell you **which library is in use** — which determines the rest of your matching strategy:
+
+| RTTI String Pattern | Library | Implication |
+|---------------------|---------|-------------|
+| `EGG::ExpHeap`, `eggExpHeap`, `EGG::Disposer` | EGG (Nintendo EAD's Wii middleware) | EAD-internal Wii title (MKW, NSMBW, SMG2-era…) |
+| `nw4r::math::VEC3`, `nw4r::ut::List` | NW4R (NintendoWare for Revolution) | Any Wii first-/third-party title |
+| `J3D...`, `JKR...`, `JUT...` | JSystem | GameCube-era first-party (Sunshine, TWW, TP, MKDD, Pikmin) |
+| `MUSY_...`, `SND_...` | MusyX | Audio middleware — version varies per game |
+
+The **single most reliable** Wii-vs-not-Wii test is searching for `EGG::ExpHeap::create` (always emits two adjacent `rlwinm` instructions — easy to find in disassembly).
+
 ---
 
 ## 🎯 Why RTTI Is a Game-Changer

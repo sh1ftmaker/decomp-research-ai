@@ -2,6 +2,31 @@
 
 *The flagship GameCube title: 20 years later, finally seeing the source.*
 
+> **See also (Discord-sourced detail):** `COMMUNITY/discord-insights-games.md` §"Super Smash Bros. Melee"
+> — sysdolphin file boundaries, fighter naming convention (Japanese names: `ftMario`, `ftPurin`/Jiggs, `ftseak`/Sheik), `nofralloc` keyword caveats, `*(volatile int*)0 = 0;` non-matching stub pattern, NTSC 1.02 SHA1 `08e0bf20134dfcb260699671004527b2d6bb1a45`.
+
+---
+
+## 🔑 Critical Build Notes (Discord-Confirmed)
+
+- **Compiler:** MWCC build **156/158** (~v1.1, early 2001). The game does **not** appear to use `-proc gekko` despite targeting Gekko — `__PPCGEKKO__` is absent. Probably built with `-proc 750` or `-proc generic`. Confirmed working base flags: `-O4,p -fp hard`.
+- **`-O4,p` ≠ `-O4`**: the `,p` (speed-tuned) variant is required; using bare `-O4` produces register-swap diffs.
+- **sysdolphin** (`HSD_*`, the `displayfunc.c`/`initialize.c` layer) likely uses a **different** flag set than game code (`-proc 750`, possibly `-vector on` as a flag).
+- **`-fp_contract` does NOT work as a compiler flag** — must be `#pragma fp_contract on`. `-vector on` is the inverse: flag only, not pragma.
+- **LTO is incompatible with matching decomp.** Never enable.
+
+## 📚 Cross-Project Reference Sources for Melee
+
+These leaked/companion projects expose sysdolphin internals and have been used to recover Melee struct layouts and file names:
+
+| Source | What it provides |
+|--------|------------------|
+| **Killer7** (HAL/Grasshopper) | Same sysdolphin library, modified source files leaked: `displayfunc.c`, `initialize.c`, `mobj.c`, `pobj.c`, `tobj.c`, `video.c`. Debug ELFs are `-O0`, ideal for struct layout. |
+| **Bloody Roar: Primal Fury** (Eighting) | sysdolphin **with debug symbols** — confirms HSD layer source file names. |
+| **Zoids: Battle Legends** | Has `HSD_Audio` and `HSD_Archive` portions absent from Melee. |
+| **FRAY** | Non-matching Melee decomp; accurate Fighter/HSD struct definitions — recommended starting point for struct work. |
+| **m-ex** + **UnclePunch Training Mode** | Independently-derived fighter struct offsets, validated against the game. `ftData` confirmed at offset `0x10C`. |
+
 ---
 
 ## 📊 Project Overview

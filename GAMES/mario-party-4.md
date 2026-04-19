@@ -2,6 +2,32 @@
 
 *The first complete GameCube decompilation! 🎉*
 
+> **See also (Discord-sourced detail):** `COMMUNITY/discord-insights-games.md` §"Mario Party 4"
+> — full REL build pipeline, `elf2rel` customization, parallel-link map-file conflict, HSF (Hudson Scene Format), `HuMemDirectMalloc` heap-number convention, two-variant Yaz0-like compressor edge cases.
+
+---
+
+## 🔑 Why MP4 Was the First to Reach 100% (Architectural Clues)
+
+- **Hudson Soft proprietary engine** (not Nintendo SDK middleware). Smaller surface area than JSystem-based titles.
+- **Massive REL-based modularity:** every minigame is a separate `.rel` file, every board is a separate `.rel`. Master table at `_ovltbl` (`0x8012FDE0`). Naming scheme:
+  - `m1xx` = MP2-era ports
+  - `m2xx` = MP3-era ports
+  - `m3xx` = mid-development stubs (mostly empty — confusing but harmless)
+  - `m4xx` = new MP4 minigames
+- **REL format version 2** (not v3). v2 retains all relocation data — heavier but matchable. (v3 trims self/DOL relocs to save memory but can't be unlinked.)
+- **Embedded build paths** in REL files reveal original directory structure: `e:\project\mpgce\prog\DLLS\bootDll\bootDll.elf`.
+- **Compiler:** MWCC **2.6** for the DOL; **MWCC 1.2.5** for Hudson's MSM audio library (newer compiler caused MSM prologue ordering issues — staying on 1.2.5 was required).
+- **String pooling enabled** (`-pool on`) for the DOL.
+
+## 🔑 REL Build Gotchas Worth Knowing
+
+- **`.ctors`/`.dtors` data must be zeroed** in the section table; keeping them causes relocation failures.
+- **`.rodata` and `.data` must be 8-byte aligned** in REL outputs.
+- **ASCII strings in REL `.s` files** need their `.balign 4` directives **removed** and string encoding fixed (Hudson REL disassembler quirk).
+- **Parallel REL builds with ninja conflict on the linker `.MAP` file** — concurrent writes corrupt it. Run REL link commands sequentially or per-target.
+- **`.rodata` first item** is almost always the `0.5` or `3.0` double constants — handy section-generation sanity check.
+
 ---
 
 ## 📊 Project Overview

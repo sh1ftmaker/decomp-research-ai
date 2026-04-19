@@ -193,121 +193,99 @@ This document identifies what information is publicly available versus what rema
 
 ---
 
-## 🎯 RECOMMENDED DISCORD EXTRACTION PRIORITY
+## 🎯 RESIDUAL EXTRACTION PRIORITIES (post-April-2026)
 
-If you have access to the target Discord channel, extract in this order:
+The bulk extraction has happened. The items below are what would still benefit from focused work:
 
-### **Phase 1: Critical Infrastructure**
-1. **CI/CD patterns** - Ask: "How do you set up CI for matching builds?" "How do you test CI?"
-2. **SDK version mapping** - Find pinned versions, ask: "What SDK does X game use?" "How to tell which SDK from binary?"
-3. **Error troubleshooting** - Collect recent error logs + solutions
-4. **Context file patterns** - Get example context files for complex JSystem code
+### **Highest leverage (would meaningfully change agent answers)**
+1. **PPC permuter** — A real implementation, not just discussion. Currently does not exist publicly; would need original engineering, not extraction.
+2. **CI YAML files** — Convince at least one major project (Melee, TP, AC, MP4) to commit a non-secret subset of their workflow files publicly.
+3. **Per-project PR checklists** — Even one written-up checklist from a maintainer would close most of the "what's expected in a PR" question.
 
-### **Phase 2: Workflow Efficiency**
-5. **Platform quirks guide** - OS-specific gotchas
-6. **Symbol resolution** - Systematic workflows, scripts
-7. **Code review standards** - What's expected in PRs
-8. **Multi-version support** - Real examples
+### **Medium leverage (refines existing answers)**
+4. **WSL ARM64 / Snapdragon** — As Copilot+ PCs proliferate, this will start mattering.
+5. **Linux distro-specific issues** — Especially around 32-bit library availability (Arch, Fedora, NixOS).
+6. **Per-project preset drift on decomp.me** — Which projects publish which preset, and why some are intentionally held back.
+7. **JSystem template context strategies** — The remaining edge of m2c context engineering.
 
-### **Phase 3: Advanced Topics**
-9. Testing strategies
-10. Performance optimization
-11. Debugging techniques
-12. Project management
+### **Lower leverage (nice-to-have, low impact)**
+8. Formal testing/fuzzing practices (currently: SHA1 + objdiff + human review).
+9. Cross-distro performance benchmarks for Ninja/wibo.
+10. Legal/clean-room formalization (currently: community consensus, no written policy).
 
 ---
 
-## 🔍 SEARCH KEYWORDS FOR DISCORD
+## 🔍 SEARCH KEYWORDS FOR LIVE DISCORD (residual gaps)
 
-Use Discord's search (Ctrl+F) with these terms:
+If you have live Discord access and want to fill the residual ~5–8%, search for:
 
-**Critical:**
-- "ci" OR "workflow" OR "github actions"
-- "SDK" OR "dolphin-sdk" OR "JSystem"
-- "error" OR "failed" OR "doesn't build"
-- "context" OR "m2c" OR "ctx.h"
-- "wibo" OR "wine" OR "crossover"
+- "ci" + "secret" / "workflow_dispatch" — for the unpublished YAML files
+- "permuter" + "ppc" / "powerpc" — for any progress on PPC permuter
+- "snapdragon" / "wsl arm" / "arm64" — for the platform-quirk gap
+- "checklist" / "before merging" / "review" — for per-project PR standards
+- "preset" + "decomp.me" / "scratch" — for preset publication policies
 
-**Significant:**
-- "symbol" OR "demangle" OR "map file"
-- "pr" OR "pull request" OR "review"
-- "version" OR "pal" OR "ntsc" OR "rev"
-- "test" OR "verify" OR "check"
-- "platform" OR "macos" OR "windows" OR "linux"
-
-**Minor:**
-- "performance" OR "slow" OR "fast"
-- "debug" OR "breakpoint"
-- "legal" OR "clean room" OR "license"
+For everything else, **check `COMMUNITY/discord-insights-*.md` first** — it's likely already extracted.
 
 ---
 
-## 📝 HOW TO DOCUMENT DISCORD INSIGHTS
+## 📝 HOW TO DOCUMENT NEW DISCORD INSIGHTS
 
-When you extract Discord content, create files in these locations:
+When you extract additional Discord content, add it to the existing `COMMUNITY/` files rather than creating new top-level structure:
 
 ```
-decompresearch/
-├── GAPS/addressed/
-│   ├── ci-cd-workflows.md           # From Phase 1, #1
-│   ├── sdk-version-matrix.md        # From Phase 1, #2
-│   ├── build-errors-troubleshooting.md  # From Phase 1, #3
-│   ├── context-patterns.md          # From Phase 1, #4
-│   ├── platform-quirks.md           # From Phase 2, #5
-│   └── symbolic-resolution.md       # From Phase 2, #6
-├── GAPS/partial/
-│   ├── code-review-standards.md     # From Phase 2, #7
-│   ├── multi-version-support.md     # From Phase 2, #8
-│   └── testing-strategies.md        # From Phase 3, #9
-├── COMMUNITY/
-│   └── code-of-conduct.md           # If found (Discord norms)
-└── GAPS.md                          # This master analysis
+COMMUNITY/
+├── discord-insights-README.md           # Update index if you add a new file
+├── discord-tribal-knowledge.md          # Master synthesis — add to relevant section
+├── discord-insights-match-help.md       # Regalloc/inline/switch additions
+├── discord-insights-tools.md            # Tool-specific additions
+├── discord-insights-games.md            # Per-game additions
+├── discord-insights-libraries.md        # JSystem/EGG/MusyX/SDK additions
+├── discord-insights-general.md          # Onboarding/PR/platform additions
+└── zelda-insights-*.md                  # Zelda-server-specific additions
 ```
 
-Each file should cite Discord sources:
+Cite as:
 ```
-Source: Discord #decomp-melee, user "username", date
-Discord Message Link: (paste Discord message URL)
+Source: GC/Wii Decompilation Discord, #channel-name, paraphrased (April 2026 synthesis)
 Confidence: High/Medium/Low
 ```
 
+**Do not** include raw message text or usernames. The COMMUNITY/ folder is paraphrased synthesis only — see `COMMUNITY/discord-insights-README.md` for the privacy policy.
+
 ---
 
-## 🚢 WHY PUBLIC SOURCES ARE LIMITED
+## 🚢 WHY DISCORD KNOWLEDGE IS STILL HARD TO ACCESS LIVE
 
 Discord content is ephemeral:
 - **No search engine indexing** (Discord blocks crawlers)
-- **No public archives** (some bots exist but incomplete)
-- **Rapidly outdated** (tool updates, bug fixes)
+- **No public archives** (the April 2026 synthesis is itself a snapshot)
+- **Rapidly outdated** (tool updates, bug fixes — the snapshot ages)
 - **Conversational** (hard to extract clean documentation)
 
-This is why **manual curation** remains necessary despite the excellent public GitHub docs.
+The April 2026 synthesis is the first systematic extraction; expect periodic re-syntheses to be necessary.
 
 ---
 
-## ✅ COMPLETION METRICS
+## ✅ COMPLETION METRICS (current)
 
-**Public Documentation Status:** ✅ 70-75% Complete
-- All major games documented
-- Toolchain reference complete
-- Core workflow explained
-- Challenges deep-dived
-- Community resources cataloged
+**Combined coverage:** ✅ ~92–95%
+- All major games documented (12 deep-dives + 76+ tracked)
+- Toolchain reference complete (TOOLS/overview.md + COMMUNITY/discord-insights-tools.md)
+- Core workflow explained (WORKFLOW/* + COMMUNITY/discord-insights-general.md)
+- Challenges deep-dived (CHALLENGES/* + COMMUNITY/discord-insights-match-help.md)
+- Community resources cataloged (COMMUNITY/websites.md)
+- MWCC build registry, per-game flags, library version registries (COMMUNITY/discord-tribal-knowledge.md, COMMUNITY/discord-insights-libraries.md)
+- AI-assisted decomp workflows captured (COMMUNITY/discord-insights-tools.md)
 
-**Missing Critical Content:** ❌ 25-30%
-- CI/CD workflows
-- SDK version matrix
-- Build error reference
-- Advanced context patterns
-- Code review standards
-
-**Estimated Discord Mining Effort:**
-- Phase 1 (Critical): 8-12 hours of targeted Discord searching
-- Phase 2 (Significant): 6-8 hours
-- Phase 3 (Minor): 4-6 hours
-- **Total:** 18-26 hours of focused extraction
+**Residual gap:** ❌ ~5–8%
+- PPC permuter (non-existent publicly)
+- Exact CI/CD YAML files (pattern documented; specific files private)
+- Per-project PR checklists (vary by maintainer)
+- Live in-progress conversation (by definition not in any archive)
+- A few platform corners (WSL ARM64, some Linux distros)
 
 ---
 
-*Last updated: 2026-03-30*
-*Analysis depth: 50+ public sources examined, 28 documentation files created*
+*Last updated: 2026-04-19*
+*Analysis depth: 50+ public sources + ~1.8M lines of Discord conversation synthesized into 14 COMMUNITY files (~2,415 lines)*

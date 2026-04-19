@@ -2,6 +2,30 @@
 
 *Stardust and starships... a Wii wonder!*
 
+> **See also (Discord-sourced detail):** `COMMUNITY/discord-insights-libraries.md` §"NW4R" / §"EGG" — Wii middleware reference; `COMMUNITY/discord-tribal-knowledge.md` §"Super Mario Galaxy".
+
+---
+
+## 🔑 Galaxy Is Not a JSystem Game (Important!)
+
+By the Wii era, Nintendo's middleware split into two separate libraries — and **SMG uses neither EGG nor JSystem**:
+
+- **EGG** (Nintendo EAD's internal Wii middleware) is used by **Mario Kart Wii, NSMBW, Skyward Sword, Punch-Out!! Wii** — but **NOT Galaxy**. SMG uses a **different internal framework**.
+- **NW4R** (NintendoWare for Revolution) **is** used by SMG and is shared with virtually every other Wii title.
+
+If you've worked on a TWW/TP/Sunshine actor and expect `JKRHeap`, `J3D...`, or `J2D...` to be present in SMG: they aren't. Math types you'll see instead live under `nw4r::math::` (`VEC3`, `MTX34`, etc.) and the heap layer is SMG-specific.
+
+## 🔑 Compiler Flags (Approximate, from Discord)
+
+```
+-c -nodefaults -proc gekko -DHOLLYWOOD_REV -DEPPC -enum int -fp hard
+-Cpp_exceptions off -rtti off -ipa file -O4,s -inline auto
+```
+
+- **`-ipa file`** is required (and **only works on MWCC 3.0+** — SMG uses a 3.0+ compiler). This is what causes some functions to match on decomp.me but not locally if your context omits the flag.
+- **NW4R library code within SMG** uses `-O4,p` (performance, not size) — note this differs from the SMG game code's `-O4,s`. Per-file flag selection matters.
+- **`-DHOLLYWOOD_REV -DEPPC`** are mandatory Wii defines.
+
 ---
 
 ## 📊 Project Overview

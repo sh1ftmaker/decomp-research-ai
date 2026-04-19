@@ -2,6 +2,35 @@
 
 *Your village is almost fully documented!*
 
+> **See also (Discord-sourced detail):** `COMMUNITY/discord-insights-games.md` §"Animal Crossing"
+> — full JSystem-vs-DOL flag separation, `.ctors` `trim_ctors` workflow, `JKRThread::run` weak-virtual quirk, ppcdis `.ctors` 4-byte-padding bug.
+
+---
+
+## 🔑 The One Architectural Fact That Drives Everything
+
+**Animal Crossing GC is architecturally a port of an N64 game (`Doubutsu no Mori +`), not a ground-up GameCube title.** The whole project carries N64-era constraints:
+
+- **`emu64`** — a custom **N64 F3DZEX2 → GameCube GX translation layer**. A full software emulator of the N64 RSP graphics microcode running on GC. Three N64 versions (`DnM`, `DnM+`, `DnM e+`) provide three reference points with different compilation flags.
+- **`jaudio`** — N64 audio library translated to the GC DSP. Described by contributors as "100% the worst part of AC" — the hardest module in the entire project.
+- The **N64 SDK is a build requirement** because N64 graphics code is present.
+- The N64 `DnM+` symbol map exists in **two versions**: one detailed (with unused functions) and one trimmed. The detailed map shows code stripped from the US GC release.
+- Comparing function sizes across `DnM+`, `DnM e+`, and AC reveals what was added, removed, or inlined per version. **This is the most leveraged cross-reference in the project.**
+
+## 🔑 Compiler Flag Separation (Critical Pitfall)
+
+JSystem in AC requires **different flags than the DOL game code**. Using DOL flags for JSystem causes RTTI string ordering mismatches in `.data` even when individual functions match.
+
+| Module | Flags |
+|--------|-------|
+| **DOL game code** | `-fp hard -proc gekko -enum int -O4,p -Cpp_exceptions off` |
+| **JSystem** | `-fp hard -proc gekko -enum int -O4,p -Cpp_exceptions off -sym on` (with implied `-inline auto`, `.sdata` threshold **8** bytes — not the default 4) |
+| **REL modules** (N64 graphics context) | MWCC **1.3.2** (older than the DOL compiler) |
+
+**Common early mistake:** putting `-fp hard` only on the linker command line (not the compiler), causing the compiler to default to `-fp soft` and producing FP-code mismatches everywhere.
+
+**Late-stage blocker:** the project reached 99% on `.text` and stalled on **two swapped RTTI strings in `.data`** — caused by the JSystem flag mismatch above. Worth checking early if your link-rate diverges from your text-rate.
+
 ---
 
 ## 📊 Project Overview

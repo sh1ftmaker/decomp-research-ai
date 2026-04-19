@@ -2,6 +2,18 @@
 
 *A practical, hands-on guide for newcomers to GameCube/Wii decompilation*
 
+> **See also (Discord-sourced detail):**
+> - `COMMUNITY/discord-insights-general.md` §"Onboarding & Community Norms" — what to post, where, and the "no need to ask to ask" culture
+> - `COMMUNITY/discord-tribal-knowledge.md` §"Onboarding patterns" — sort `.s` files by line count and start with the shortest
+
+---
+
+## 🧭 Three Community Norms Worth Knowing on Day One
+
+1. **No need to "ask to ask."** Post technical questions directly in `#match-help` (or the project's equivalent). Even partial or naive questions are welcome. Don't preface with "can I ask a question?" — just ask.
+2. **Skip tutorials, study merged PRs.** Video tutorials and third-party guides date quickly because the toolchain evolves rapidly. The pinned `#match-help` documents (training files + IBM PowerPC Compiler Writer's Guide) plus recent merged PRs are what veterans actually recommend.
+3. **Don't start a new decomp project unless you'll commit sustained effort.** Community leadership has explicitly called out projects that stall below 10% as harmful — they fragment contributor attention. Either commit, recruit, or pick an existing active project.
+
 ---
 
 ## 🎯 Pre-Checklist: Are You Ready?

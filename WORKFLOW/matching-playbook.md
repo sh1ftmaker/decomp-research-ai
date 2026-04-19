@@ -3,6 +3,29 @@
 A step-by-step process for an AI agent to match GameCube functions, distilled from
 community research, zeldaret/tww docs, doldecomp/melee wiki, and trial-and-error.
 
+> **See also (Discord-sourced detail):**
+> - `COMMUNITY/discord-insights-match-help.md` — full `#match-help` synthesis: regalloc, inlining, switch shapes, the peephole bug
+> - `COMMUNITY/discord-tribal-knowledge.md` §"Register Allocation Internals" — virtual register numbers, coalescing bug, 29-neighbor spill threshold
+> - `COMMUNITY/discord-insights-tools.md` §"mwcc-debugger" — inspect MWCC's internal virtual register numbering for surgical fixes
+
+---
+
+## ⚡ MWCC Regalloc Mental Model (Use Before Permuting Names)
+
+Before you start blindly permuting variable names, know how MWCC actually colors registers:
+
+- **Variables get virtual register numbers (VRNs) at creation time.** Lower VRN → lower priority → higher physical register number.
+- **Spill pressure threshold: 29 neighbors** (out of 30 allocatable GPRs). Above that, MWCC spills to stack.
+- **Coalescing bug:** when MWCC merges a temporary into a physical register, it does **not** remove the temporary from the interference graph. Neighbor counts inflate. This is exploitable: introducing `(void)param;` or extra struct-field-to-temporary captures shifts the coloring of *other* variables.
+- **Levers, in order of cost:**
+  1. Declare a variable earlier (lowers its VRN, raises register number).
+  2. Add `(void)param;` to introduce coalescing temporaries.
+  3. Replace repeated struct field accesses with a temporary (`int x = obj->field;`).
+  4. Add or remove `const` on a pointer (changes register class).
+  5. Try permuter only after the above produced no movement.
+
+When you're really stuck, run **`mwcc-debugger`** to dump MWCC's internal VRN assignment for your function — it tells you which variable will land where, before you rebuild.
+
 ---
 
 ## Phase 1: Setup & Target Selection

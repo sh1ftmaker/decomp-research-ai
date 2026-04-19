@@ -2,6 +2,22 @@
 
 *The core methodology behind successful GameCube/Wii decompilation*
 
+> **See also (Discord-sourced detail):**
+> - `COMMUNITY/discord-insights-general.md` §"PR Submission and Code Review Standards" — what gets a PR accepted (the rules below)
+> - `COMMUNITY/discord-tribal-knowledge.md` §"PR Standards (de facto, no formal CONTRIBUTING.md)"
+
+---
+
+## 🧾 De Facto PR Standards (No Project Has a `CONTRIBUTING.md`)
+
+Across all GC/Wii decomp projects, these informal rules have been consistent on PR review:
+
+- **The whole DOL must match byte-for-byte after your PR.** Individual functions in a PR don't each need to be 100% matching — but anything non-matching **must be wrapped in `#ifdef NONMATCHING`** (or the project-specific equivalent). `#if 0` and comment-outs are explicitly **rejected**.
+- **No hardcoded addresses**, even when they produce a matching binary. Use `extern` or move data into the source file. Hardcoded addresses produce unshiftable, unportable code.
+- **Symbol names follow map-derived or Nintendo conventions:** CamelCase for C++ methods, lowercase for C functions. Match the surrounding file's style.
+- **`.balign 8` directives required at section starts.** Missing them causes relocation mismatches on newer binutils/devkitPPC. (This is what triggered the devkitPPC r39→r40 breakage — fix is to add the `.balign`s, not to pin to old devkitPPC.)
+- Project leads tend to **trust experienced contributors** over time and stop checking every line. New contributors get tighter review until that trust is built.
+
 ---
 
 ## 🎯 What is "Matching"?

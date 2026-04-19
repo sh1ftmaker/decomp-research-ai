@@ -2,6 +2,20 @@
 
 *How to identify functions and global variables when they're not labeled, using various techniques from symbol maps to pattern recognition.*
 
+> **See also (Discord-sourced detail):**
+> - `COMMUNITY/discord-insights-tools.md` §"cwparse" — Rust library for parsing Metrowerks `.map` files (Melee, Pikmin, Monkey Ball, Metroid Prime tested)
+> - `COMMUNITY/discord-insights-tools.md` §"objdiff" — right-click → "Copy mangled name" workflow for grepping symbols across the project
+> - `COMMUNITY/zelda-insights-tools-other.md` — Ghidra symbol-map import (must remove the `Offset` column before pasting)
+> - `COMMUNITY/discord-insights-libraries.md` §"JSystem"/"EGG"/"NW4R" — namespace prefixes & RTTI string conventions
+
+---
+
+## ⚡ Two Tools Worth Knowing About First
+
+**`cwparse`** is a Rust library that parses Metrowerks linker `.map` files into structured symbol data. It's the foundation of `objdiff.csv` generation, progress calculation, and symbol-order mismatch detection. If you've imported a leaked debug map, `cwparse` is what reads it.
+
+**objdiff's "Copy mangled name"** — right-click any symbol in objdiff to copy the mangled CodeWarrior name to the clipboard. Then `grep -r "<mangled>"` across the project to find every reference. Faster than re-demangling and re-grepping by hand.
+
 ---
 
 ## 🎯 The Symbol Problem

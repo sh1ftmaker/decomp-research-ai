@@ -2,6 +2,12 @@
 
 *Why your perfect C code compiles to different bytes than the original, and how to fix it.*
 
+> **See also (Discord-sourced detail):**
+> - `COMMUNITY/discord-tribal-knowledge.md` §1 — peephole bug & full pragma reference
+> - `COMMUNITY/discord-insights-match-help.md` §"Register Allocation Tricks" — `const`, name-length, & local-ordering levers
+> - `COMMUNITY/discord-insights-tools.md` §"mwcc-debugger" — inspect MWCC's internal virtual register numbering
+> - `COMMUNITY/zelda-insights-permuter.md` — decomp-permuter design notes (and why no PPC port exists yet)
+
 ---
 
 ## 🤔 The Problem Explained
@@ -433,6 +439,38 @@ Sometimes register allocation just won't match no matter what you try. Reasons:
 3. **Undocumented compiler behavior**: CodeWarrior has weird heuristics. Find a similar function in the project that already matches and **copy its variable structure exactly**. If they used `short`, `mid`, `long` naming patterns, follow that.
 
 4. **The function is actually impossible**: Rare but happens. Some functions have "non-matching" status in splits.txt for a reason. Mark as `NonMatching` and move on. The community has experts who may solve it later.
+
+---
+
+## 🔥 Two Discord-Sourced Tricks Worth Trying Before Permuter
+
+### The `const` Lever (Confirmed in #match-help)
+
+Adding or removing `const` on a pointer parameter or local variable can **shift MWCC's register coloring** without changing semantics. If your diff shows a small, systematic register permutation, try:
+
+```c
+// Original
+void f(MyStruct* p, int i) { ... }
+
+// Try
+void f(const MyStruct* p, int i) { ... }
+// or: void f(MyStruct* const p, int i) { ... }
+```
+
+The change can flip whether `p` lives in a callee-saved or caller-saved register class. Quickest win when nothing else moves the needle.
+
+### The Peephole Bug (MWCC 1.2.5 / 1.3.2)
+
+If your function appears **after an `asm { }` block** in the same `.c` file (or after a header that contains one), MWCC silently disables the peephole optimizer for the rest of the file. Symptoms include `beq label` + `blr` instead of a single `beqlr`, missing `mr.` (record) combinations, and extra register moves where the original had none.
+
+Fix:
+```c
+asm { ... }
+#pragma peephole on
+void myFunc() { /* now generates fused branch-to-return */ }
+```
+
+If you've spent an hour fighting register diffs in a function that "should" match, scroll up — is there an `asm { }` block above it? See `COMMUNITY/discord-insights-match-help.md` §"The Peephole Optimizer Bug" for the full story.
 
 ---
 

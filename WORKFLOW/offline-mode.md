@@ -2,6 +2,23 @@
 
 **No Discord, No decomp.me** - A practical guide for contributing to GameCube/Wii decomp projects when you can't use the usual community tools.
 
+> **See also (Discord-sourced detail):**
+> - `COMMUNITY/zelda-insights-decomp-me.md` — design rationale for decomp.me, why it lowers the onboarding bar, and what you give up offline
+> - `COMMUNITY/discord-insights-tools.md` §"Platform Quirks" — wibo, devkitPPC version pinning, WSL caveats (which apply equally offline)
+
+---
+
+## 🔌 What "Offline" Specifically Costs You
+
+The Discord archive is explicit about which decomp.me features have no good local substitute:
+
+- **Live compile-on-keystroke** with shareable URL — no offline equivalent. Local builds + objdiff are the closest analog but require a full toolchain.
+- **Quick "is this match-able at all?" tests** — decomp.me's nsjail-sandboxed compile takes seconds; local builds take minutes.
+- **Sharing context with someone who hasn't cloned the repo** — without decomp.me, you must paste assembly + C + headers into GitHub Issues or skip help entirely.
+- **Cross-project preset access** — decomp.me has the catalog of MWCC versions and flag presets pre-installed. Locally, every preset must be set up by hand.
+
+Things you **don't** lose offline: per-keystroke iteration speed (local `ninja` after the first build is fast), debugger access (you actually have **more** than decomp.me here), and the ability to run `decomp-permuter` on long jobs.
+
 ---
 
 ## ⚠️ Reality Check

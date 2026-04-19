@@ -2,6 +2,13 @@
 
 *What tools you need, how they fit together, and what each one does.*
 
+> **See also (Discord-sourced detail):**
+> - [`COMMUNITY/discord-insights-tools.md`](../COMMUNITY/discord-insights-tools.md) — Full MWCC build-stamp registry, mwcc-debugger setup, decomp.dev API, AI-assisted decomp workflows
+> - [`COMMUNITY/discord-tribal-knowledge.md`](../COMMUNITY/discord-tribal-knowledge.md) — Master synthesis: per-game compiler flags, full pragma reference, critical discoveries
+> - [`COMMUNITY/discord-insights-general.md`](../COMMUNITY/discord-insights-general.md) — Platform setup quirks (WSL, macOS, devkitPPC r39 vs r40)
+> - [`COMMUNITY/zelda-insights-decomp-me.md`](../COMMUNITY/zelda-insights-decomp-me.md) — decomp.me platform architecture
+> - [`COMMUNITY/zelda-insights-permuter.md`](../COMMUNITY/zelda-insights-permuter.md) — decomp-permuter internals (note: no PPC support)
+
 ---
 
 ## 🎯 The Big Picture
@@ -224,9 +231,11 @@ ninja                                 # Rebuild affected files
 
 ## 🛠️ Environment Setup by OS
 
-### Windows (Recommended)
+### Windows (Native or WSL2)
 
-All projects **strongly recommend** native Windows (not WSL):
+Native Windows is well-supported, but most experienced contributors actually run **WSL2 + wibo** on Windows hosts because the Linux-targeted toolchain (`ninja`, `wibo`, dtk-template Makefiles) is exercised first there. Either is fine. **WSL1 will not work** — it cannot run the 32-bit MWCC binaries. See `COMMUNITY/discord-insights-general.md` §3.
+
+When using native Windows:
 
 ```powershell
 # 1. Install Python 3.11+ from python.org
@@ -252,10 +261,11 @@ pip install ninja
 #   - Use for asset extraction and testing
 ```
 
-**Why not WSL?**:
-- objdiff's filesystem watcher doesn't work reliably across WSL/Windows boundary
-- Build performance is worse
-- Some Windows-only tools (CodeWarrior compatibility layers) need native Windows
+**WSL caveats** (when you do use WSL2):
+- Keep the project under `/home/<user>/...`, not `/mnt/c/...` — cross-filesystem builds are 5–10× slower.
+- `objdiff` GUI is best run from Windows pointing at the WSL filesystem via `\\wsl$\...`; the file-watcher works that way.
+- WSL1 cannot run 32-bit binaries → MWCC will fail. Always use WSL2.
+- Snapdragon / ARM64 Windows + WSL is not yet a documented working configuration.
 
 ---
 
@@ -284,14 +294,16 @@ sudo xattr -rd com.apple.quarantine '/Applications/Wine Crossover.app'
 # Ubuntu/Debian:
 sudo apt-get install python3 python3-pip ninja-build
 
-# For x86_64: wibo is auto-downloaded
+# For x86_64: wibo is auto-downloaded by configure.py
 # For non-x86 (ARM): install Wine
 sudo apt-get install wine
 
 # Then same objdiff, Dolphin, Ghidra installation
 ```
 
-**Note**: Most projects are tested thoroughly on Windows, less so on macOS/Linux. Windows is the primary development platform.
+**devkitPPC version pin**: Some projects depend on **devkitPPC r39**. r40 introduced a breaking change to the linker/SDK headers that must be patched per project. Check the project's README; if it pins r39, install that version specifically (archived builds linked from `COMMUNITY/discord-insights-general.md` §10).
+
+**Note**: All major projects test on both Linux and Windows. macOS works (Wine Crossover) but is the least-exercised path; Apple Silicon users typically run a Linux VM or Docker container.
 
 ---
 
@@ -565,14 +577,23 @@ All hosted at `files.decomp.dev` (always-current links):
 | Symptom | Likely Cause | Fix |
 |---------|--------------|-----|
 | objdiff doesn't auto-rebuild | Filesystem watcher failed | Restart objdiff, check `objdiff.json` watch_patterns |
+| objdiff won't start at all (Windows) | Corrupted config | Delete `%APPDATA%\objdiff` and relaunch |
 | `wibo` download fails | Network issue, missing ca-certificates | Download manually from GitHub releases |
+| `wibo` errors on string-resource access | Known wibo limitation | Fall back to Wine for that one operation |
 | Build fails: " unrecognized opcode" | Wrong compiler flags | Check `configure.py` uses correct CodeWarrior flags |
-| m2c generates garbage | Wrong target or missing context | Use `-t ppc-mwcc-c` and provide `.h` files |
+| Build fails: linker error after r40 upgrade | devkitPPC r40 breaking change | Pin to r39 (archived link in `COMMUNITY/discord-insights-general.md`) |
+| Build fails: 32-bit binary won't run | Running WSL1, or missing 32-bit libs on Linux | Use WSL2; `apt-get install libc6:i386` on Debian/Ubuntu |
+| m2c generates garbage | Wrong target or missing context | Use `-t ppc-mwcc-c` and provide `.h` files; preprocess context with `cpp -E` |
+| m2c chokes on `#ifdef`-heavy header | Context preprocessing needed | Run header through `cpp -E` first; flatten guards |
 | Cannot link: undefined reference | Missing SDK function | Check if function is in doldecomp/sdk_* repos |
 | Ghidra can't find symbols | Load wrong file | Use `dtk rel merge` output, not raw DOL |
+| Ghidra symbol-map import fails | `Offset` column present | Strip the `Offset` column from the .map first |
 | Different object sizes | Splitting mismatch | Rerun `dtk dol split` with updated config |
+| Function matches by score but DOL doesn't | Section ordering or weak symbol mismatch | Check `.balign` directives and weak function ordering |
 
-See [CHALLENGES/](CHALLENGES/) for detailed problem-solving guides.
+For a comprehensive Discord-sourced error registry (10+ specific errors with causes and fixes), see [`COMMUNITY/discord-insights-tools.md`](../COMMUNITY/discord-insights-tools.md) §3 and [`COMMUNITY/discord-insights-general.md`](../COMMUNITY/discord-insights-general.md) §8.
+
+See [CHALLENGES/](../CHALLENGES/) for detailed problem-solving guides on regalloc, inlines, switches, etc.
 
 ---
 

@@ -2,6 +2,31 @@
 
 *How to reconstruct C `switch` statements from PowerPC assembly, including jump tables and comparison trees.*
 
+> **See also (Discord-sourced detail):**
+> - `COMMUNITY/discord-insights-match-help.md` §"Switch Statement Patterns" — jump-table vs. branch-chain selection rules, `switch(localVar)` vs. `switch(field->member)` ordering trick
+> - `COMMUNITY/discord-tribal-knowledge.md` §"Pragmas" — full pragma reference
+
+---
+
+## 🛑 The One Pragma That Changes Everything: `#pragma switch_tables off`
+
+If your switch produces a **jump table in `.rodata`** but the original binary has a **branch chain** (or vice versa), the original code was likely compiled with `#pragma switch_tables off`, which forces MWCC to emit branch chains for **all** switches in scope:
+
+```c
+#pragma switch_tables off
+switch (x) {
+    case 0: ...
+    case 1: ...
+    case 2: ...
+}
+#pragma switch_tables reset
+```
+
+Other levers that change switch shape without changing C semantics:
+- **Default case position in source**: writing `default:` first vs. last affects branch ordering.
+- **Switching on a local copy** vs. **switching on a struct field**: `int v = obj->state; switch (v)` and `switch (obj->state)` can produce different load/branch interleaving.
+- **Case order in source**: keep cases in **table-index order** (0, 1, 2…) for jump tables; for branch chains, source order can affect comparison order.
+
 ---
 
 ## 🎯 Why Switches Are Hard

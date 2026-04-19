@@ -2,6 +2,38 @@
 
 *The crowning jewel of Zelda decompilation - a masterpiece in progress.*
 
+> **See also (Discord-sourced detail):** `COMMUNITY/zelda-insights-tww.md` (~80K-message synthesis from `#tww-decomp` and `#tww-decomp-help`)
+> — actor system subtleties, debug map scraping workflow, J3D struct alignment quirks, Ghidra server (`ghidra.decomp.dev`), `decompctx.py`.
+
+---
+
+## 🔑 The Weak-Function-Ordering Problem (TWW's Defining Matching Pain)
+
+TWW commonly hits a state where **every function in a TU is 100% byte-matching but the section hash still mismatches** because **weak functions** (vtables, header-defined methods, base-class destructors) appear in the wrong order within `.text`. Things to know:
+
+- `-sym on` places weak functions **by source file**, which especially affects destructor placement.
+- Making a base class destructor implicit vs. explicit changes which class's vtable appears first (order is determined by "completion").
+- A common workaround: move a function to a header (makes it weak), then re-order manually in source. Hacky but works for some actors.
+- objdiff shows **duplicate entries** when weak symbols are present — useful for catching vtable/constructor ordering bugs early.
+- Some RELs require **`-inline noauto`** to match weak function ordering.
+
+## 🔑 Cross-Project Coupling: TP Is Your Best Reference
+
+**TWW shares ~90% of its engine code with Twilight Princess.** When TP contributors are busy, TWW progress stalls because TP-derived patterns drive most of TWW's matching workflow:
+
+- **TP debug version** is the primary fallback for clarifying TWW inlines.
+- **Kiosk Demo debug ELF** for TWW yields ~50+ suspected inlines by name pattern (extract via map scraping).
+- **`f_pc_manager`** (main player controller) is too large for objdiff and requires manual inspection.
+- **JGeometry template** float math is the worst regalloc territory in the project — often exceeds manual effort.
+
+## 🔑 Confirmed Compiler Flags (from TWW Discord)
+
+- **`-O3,s`** vs **`-O3`**: unclear if size optimization materially differs; test per-file.
+- **`-inline noauto`**: needed for some RELs.
+- **`-schedule off`**: turns off instruction scheduling; affects regalloc in float-heavy code.
+- **`-sym on/off`**: drives weak-function placement (see above).
+- **`-fp_contract off`**: framework needs this for consistency.
+
 ---
 
 ## 📊 Project Overview

@@ -3,8 +3,9 @@
 **Repository:** `decomp-research-ai`  
 **Purpose:** Comprehensive knowledge base for AI agents contributing to GameCube/Wii decompilation projects  
 **Created:** 2026-03-30  
+**Last major update:** 2026-04-19 (Discord knowledge integrated)  
 **Maintainer:** Hermes (AI agentic assistant)  
-**Status:** Production Ready (75% complete from public sources)
+**Status:** Production Ready (~92–95% complete after Discord synthesis)
 
 ---
 
@@ -12,8 +13,12 @@
 
 This repository consolidates **publicly available knowledge** about GameCube and Wii game decompilation, with a focus on the "matching decompilation" methodology (byte-for-byte identical binary reconstruction). It covers tools, workflows, challenges, game-specific patterns, and community resources.
 
-**Coverage:** ~75% of needed knowledge from public sources (GitHub, wikis, documentation)  
-**Gap:** ~25% remains in Discord servers (see `GAPS.md`)  
+**Coverage:** ~92–95% of needed knowledge after April 2026 Discord synthesis (~1.8M lines analyzed across 20+ channels)
+- ~75% from public sources (GitHub, wikis, documentation)
+- ~17–20% additional from Discord (GC/Wii Decompilation server + Zelda Decompilation server) — see `COMMUNITY/discord-insights-*.md` and `COMMUNITY/zelda-insights-*.md`
+
+**Remaining gap:** ~5–8% — exact CI/CD YAML files, per-project PR checklists, PPC-permuter (does not exist publicly). See `GAPS.md`.
+
 **Audience:** Both human researchers and AI agents (like Claude, GPT, etc.)
 
 ---
@@ -69,12 +74,26 @@ decomp-research-ai/
 │   └── strategies.md                 # From matching decomp to PC ports (GX→OpenGL/Vulkan)
 │
 ├── COMMUNITY/
-│   └── websites.md                   # Essential hubs: decomp.dev, decomp.me, wikis, Discords
+│   ├── websites.md                   # Essential hubs: decomp.dev, decomp.me, wikis, Discords
+│   ├── discord-insights-README.md    # Index of Discord-sourced synthesis (~2,415 lines)
+│   ├── discord-tribal-knowledge.md   # Master synthesis (all GC/Wii channels)
+│   ├── discord-insights-match-help.md   # Regalloc, inlines, switches, float patterns
+│   ├── discord-insights-tools.md     # MWCC registry, objdiff, dtk, m2c, mwcc-debugger
+│   ├── discord-insights-games.md     # Melee, AC, MKDD, MP4 architectural notes
+│   ├── discord-insights-libraries.md # JSystem/EGG/MusyX/SDK version registries
+│   ├── discord-insights-general.md   # Onboarding, PR standards, platform setup
+│   ├── zelda-insights-tww.md         # Wind Waker matching (multi-version, weak ordering)
+│   ├── zelda-insights-m2c.md         # m2c architecture, PPC support history
+│   ├── zelda-insights-permuter.md    # decomp-permuter internals (PPC support gap)
+│   ├── zelda-insights-decomp-me.md   # decomp.me platform (Django+React+nsjail)
+│   ├── zelda-insights-ido-decomp.md  # IDO compiler reverse engineering
+│   ├── zelda-insights-framework.md   # N64 framework founding debates
+│   └── zelda-insights-tools-other.md # diff.py, Ghidra, IDA, n64split
 │
 └── ARCHIVE/                          # (Optional) Historical notes, superseded content
 ```
 
-**Total files:** 29 markdown documents (~11,000 lines, ~88,000 words)
+**Total files:** 46 markdown documents (~16,600 lines)
 
 ---
 
@@ -98,14 +117,19 @@ Is it about a SPECIFIC GAME?
 │         • Progress, architecture, contribution guidance
 │         • Cross-reference: TOOLS/ for toolchain details
 │         • CHALLENGES/ for common issues in that game
+│         • COMMUNITY/discord-insights-games.md for tribal knowledge (Melee/AC/MKDD/MP4)
+│         • COMMUNITY/zelda-insights-tww.md for Wind Waker specifics
 │
 └─ NO → Is it about TOOLS or WORKFLOW?
-    ├─ Tools → TOOLS/overview.md
-    ├─ Getting started → WORKFLOW/getting-started.md
+    ├─ Tools → TOOLS/overview.md + COMMUNITY/discord-insights-tools.md
+    ├─ Getting started → WORKFLOW/getting-started.md + COMMUNITY/discord-insights-general.md
     ├─ Matching theory → WORKFLOW/matching-process.md
-    ├─ Problems/errors → Search CHALLENGES/ for symptom
-    └─ What's missing? → GAPS.md (tells you what's Discord-only)
+    ├─ Problems/errors → CHALLENGES/* + COMMUNITY/discord-insights-match-help.md
+    ├─ Library knowledge (JSystem/EGG/MusyX/SDK) → COMMUNITY/discord-insights-libraries.md
+    └─ What's missing? → GAPS.md (residual Discord-only items)
 ```
+
+**Always check the COMMUNITY/ folder first for any topic that touches MWCC versioning, peephole behavior, regalloc tricks, JSystem/EGG/MusyX/SDK versions, or PR standards** — that knowledge was Discord-only until April 2026.
 
 ### Knowledge Confidence Levels
 
@@ -125,17 +149,33 @@ Confidence: High
 
 ## 🤖 AI-Specific Guidance
 
+### Critical Discord-Sourced Discoveries (read before writing matching code)
+
+These eight findings came out of the April 2026 Discord synthesis and resolve a large fraction of "why doesn't this match?" questions:
+
+1. **Peephole optimizer bug** — Any `asm { }` block disables the peephole optimizer for the *rest of the file*. Insert `#pragma peephole on` after the asm block to re-enable. Source: `COMMUNITY/discord-insights-match-help.md`.
+2. **`const` shifts register coloring** — Adding/removing `const` on a pointer parameter changes MWCC's register assignment. Useful as a low-cost regalloc lever.
+3. **`-ipa file` changes inline ordering** — Only on MWCC 3.0+. Explains many decomp.me-vs-local discrepancies.
+4. **`#pragma gecko_float_typecons on`** — Undocumented; required for some float typecast patterns. Discovered by string-searching the compiler binary.
+5. **`__LINE__` test** — Macro vs. inline disambiguation: if `__LINE__` shows the call site, it's a macro; if it shows the definition, it's inlined.
+6. **`volatile float` forces stack roundtrip** — Useful when MWCC is keeping a value in a float register but the original spilled it.
+7. **mwcc-debugger** — Tool that exposes MWCC's internal virtual register numbering. Enables surgical regalloc fixes instead of guess-and-check. See `COMMUNITY/discord-insights-tools.md`.
+8. **wibo is ~2× faster than Wine** for invoking MWCC; prefer it on Linux/WSL. devkitPPC r40 introduced a breaking change — many projects pin r39.
+
+Full pragma reference, MWCC build-stamp registry, and per-game compiler flags live in `COMMUNITY/discord-tribal-knowledge.md`.
+
 ### Important Limitations
 
-This repository is **75% complete**. The remaining 25% lives in Discord and cannot be accessed by AI agents without:
-- Discord API integration (against ToS for archival)
-- Human curation (someone manually copy-pastes insights)
-- Direct channel access (requires user credentials)
+This repository is now **~92–95% complete** after the April 2026 Discord integration. The residual gap is small but real:
+- **PPC permuter** does not exist publicly (decomp-permuter is MIPS/x86 only).
+- **Exact CI/CD YAMLs** for most projects are still not in public repos (patterns are documented; specific files aren't).
+- **Per-project PR checklists** vary; consult each repo's open/merged PRs for de-facto standards.
+- **Live Discord conversations** (today's bug reports, in-progress work) are by definition not in this repo.
 
 **When you encounter gaps:**
-1. Check `GAPS.md` to see if the topic is known to be Discord-only
-2. If yes: State clearly "This information is not publicly documented; requires Discord access"
-3. If no: It may be undiscovered - suggest searching GitHub issues/PRs of relevant repos
+1. Check `GAPS.md` for the canonical list of what's still missing.
+2. Check `COMMUNITY/discord-insights-README.md` — many older "gaps" are now filled.
+3. If still unknown: state clearly that the answer requires live Discord/GitHub Issues access.
 
 ### Recommended Workflow for AI-Assisted Contribution
 
@@ -207,14 +247,23 @@ See `TOOLS/overview.md` for more.
 | Topic | Location | Confidence |
 |-------|----------|------------|
 | Tool installation | TOOLS/overview.md | High |
+| MWCC build-stamp registry | COMMUNITY/discord-tribal-knowledge.md | High |
+| Per-game compiler flags | COMMUNITY/discord-tribal-knowledge.md | High |
+| Pragma reference | COMMUNITY/discord-insights-match-help.md | High |
 | Getting started | WORKFLOW/getting-started.md | High |
+| Onboarding & PR standards | COMMUNITY/discord-insights-general.md | High |
 | Matching methodology | WORKFLOW/matching-process.md | High |
-| Why my function doesn't match | CHALLENGES/* (pick relevant) | High |
+| Regalloc / inline / switch tricks | COMMUNITY/discord-insights-match-help.md | High |
+| Why my function doesn't match | CHALLENGES/* + COMMUNITY/discord-insights-match-help.md | High |
 | Game-specific status | GAMES/<game>.md | High |
+| Game-specific tribal knowledge | COMMUNITY/discord-insights-games.md | High |
 | What projects exist? | GAMES/projects-overview.md | High |
+| Library versions (JSystem/EGG/MusyX/SDK) | COMMUNITY/discord-insights-libraries.md | High |
 | What's NOT documented? | GAPS.md | High |
 | Porting to PC | PORTING/strategies.md | Medium |
 | Community resources | COMMUNITY/websites.md | High |
+| decomp.me architecture | COMMUNITY/zelda-insights-decomp-me.md | High |
+| Permuter internals | COMMUNITY/zelda-insights-permuter.md | High |
 
 ### By Game
 
@@ -233,20 +282,21 @@ Games with least documentation (avoid as first project):
 
 ## ⚠️ Known Gaps (AI Should Flag These)
 
-When user asks about these topics, response should be:
+Most of the original Discord-only gaps have been filled by the April 2026 synthesis. Before flagging a topic as unknown, **check `COMMUNITY/discord-insights-README.md`** — the SDK matrix, build error reference, m2c context patterns, platform quirks, and code review standards are now documented.
 
-> "This information is not publicly documented in the decompilation community. It exists only in Discord servers (ZeldaRET, doldecomp). See GAPS.md for details. Without Discord access, you would need to discover this through trial and error, GitHub Issues, or by studying merged PRs."
+### Gaps That Remain
 
-### Gap Topics
+1. **PPC permuter** — Does not exist publicly. decomp-permuter supports MIPS/x86 only. See `COMMUNITY/zelda-insights-permuter.md`.
+2. **Exact CI/CD YAML files** — General patterns are documented; per-project workflow files are still mostly absent from public repos.
+3. **Per-project PR checklists** — Vary by maintainer; consult merged PRs of the target repo.
+4. **Live in-progress work** — Not in any archive; check the repo's GitHub Issues and the relevant Discord channel.
+5. **Some SDK header sources** — A few Wii/RVL SDK headers are still circulated privately; projects work around with stubs.
 
-1. **CI/CD patterns** - No public GitHub Actions workflows (all 404)
-2. **SDK version matrix** - Which dolphin-sdk/JSystem version each game uses
-3. **Build error reference** - Systematic troubleshooting for dtk/objdiff/mwldeppc errors
-4. **Advanced m2c** - Complex JSystem context file patterns
-5. **Code review standards** - What makes a PR acceptable (no CONTRIBUTING.md exists)
-6. **Platform quirks** - WSL limitations, macOS-specific issues, ARM64 compatibility
+### When to Flag
 
-See `GAPS.md` for complete list (14 gaps, tiered by priority).
+Use this language only if you've checked both `GAPS.md` and `COMMUNITY/discord-insights-README.md`:
+
+> "This is one of the residual gaps after the April 2026 Discord synthesis. The general pattern is documented in `COMMUNITY/...`, but the specific [file/version/checklist] requires live access to GitHub Issues or the relevant Discord channel."
 
 ---
 
@@ -292,9 +342,9 @@ Use this template when helping a user plan a decompilation effort:
 
 ## 📊 Repository Statistics
 
-- **Created:** March 2025 (original), updated March 2026
-- **Size:** ~88,000 words across 29 files
-- **Sources cited:** 55+ (GitHub repos, wikis, documentation)
+- **Created:** March 2025 (original); updated March 2026 (offline-mode); updated April 2026 (Discord synthesis)
+- **Size:** ~16,600 lines across 46 files
+- **Sources cited:** 55+ public + ~1.8M lines of Discord conversation synthesized into 14 COMMUNITY/ files
 - **Games covered:** 12 major titles (12 GCN, 10 Wii comprehensive)
 - **Total projects tracked:** 76+ across 8 console generations
 - **License:** CC-BY-SA 4.0 (you can share/adapt with attribution)
@@ -312,10 +362,10 @@ Use this template when helping a user plan a decompilation effort:
    - Discernment of subtle mismatches requires human judgment
    - AI can accelerate search but not replace final verification
 
-3. **Community knowledge is ephemeral**
-   - Discord conversations are the "tribal knowledge" repository
-   - If not archived, this knowledge dies with chat history
-   - This repo captures what's publicly available
+3. **Community knowledge is ephemeral — but a snapshot now exists**
+   - Discord conversations were the "tribal knowledge" repository
+   - The April 2026 synthesis (`COMMUNITY/discord-*` and `COMMUNITY/zelda-insights-*`) captures ~2,415 lines extracted from ~1.8M lines of chat
+   - Live conversations continue; this repo captures the state as of April 2026
 
 4. **Tooling evolves rapidly**
    - dtk v1.8.3 today, v1.9.0 tomorrow
@@ -374,7 +424,7 @@ To update:
 
 ## 🎉 Final Note for AI Agents
 
-You are now equipped with ~75% of the knowledge needed to assist with GameCube/Wii decompilation. The remaining 25% requires human community interaction. Use this repository as your primary knowledge source, and always check `GAPS.md` when you're unsure if information exists elsewhere.
+You are now equipped with ~92–95% of the knowledge needed to assist with GameCube/Wii decompilation. The Discord synthesis (`COMMUNITY/discord-*` + `COMMUNITY/zelda-insights-*`) closed most of the historical "tribal knowledge" gap. Use this repository as your primary knowledge source, and check `GAPS.md` only for the residual ~5–8%.
 
 **Remember:** Your goal is to **accelerate human contributors**, not replace them. Provide clear, accurate, well-sourced information. Flag gaps transparently. Suggest next steps that are actionable.
 
@@ -382,5 +432,5 @@ Happy decompiling! May your registers align and your relocations resolve! (◕�
 
 ---
 
-*Last updated: 2026-03-30*  
-*Version: 2.0 (post-offline-mode workflow addition)*
+*Last updated: 2026-04-19*  
+*Version: 3.0 (Discord knowledge integrated across all docs)*
