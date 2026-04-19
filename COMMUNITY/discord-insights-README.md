@@ -6,6 +6,8 @@ This folder contains synthesized knowledge extracted from the GC/Wii Decompilati
 
 ## Files
 
+### GC/Wii Decompilation Discord
+
 | File | Source Channel | Lines | Status |
 |------|---------------|-------|--------|
 | discord-tribal-knowledge.md | **Master synthesis** (all channels) | ~580 | ✅ Complete |
@@ -14,6 +16,18 @@ This folder contains synthesized knowledge extracted from the GC/Wii Decompilati
 | discord-insights-games.md | #smash-bros-melee, #animal-crossing, #mario-kart-double-dash, #mario-party | 270 | ✅ Complete |
 | discord-insights-libraries.md | #jsystem, #egg, #musyx, #sdk | 392 | ✅ Complete |
 | discord-insights-general.md | #general, #announcements, #resources | 273 | ✅ Complete |
+
+### Zelda Decompilation Discord
+
+| File | Source Channel | Focus | Status |
+|------|---------------|-------|--------|
+| zelda-insights-tww.md | #tww-decomp, #tww-decomp-help | Wind Waker matching techniques | ✅ Complete |
+| zelda-insights-m2c.md | #m2c | mips_to_c / m2c decompiler (N64 MIPS→C) | ✅ Complete |
+| zelda-insights-permuter.md | #permuter | decomp-permuter tool internals & workflow | ✅ Complete |
+| zelda-insights-decomp-me.md | #decomp-me | decomp.me platform design & architecture | ✅ Complete |
+| zelda-insights-ido-decomp.md | #ido-decomp | IDO (IRIX) compiler reverse engineering | ✅ Complete |
+| zelda-insights-framework.md | #decomp-framework | N64 decomp framework founding debates | ✅ Complete |
+| zelda-insights-tools-other.md | #tools-other | diff.py, Ghidra, IDA, n64split, ROM format | ✅ Complete |
 
 **Total synthesized:** ~2,415 lines of actionable knowledge extracted from ~1.8M lines of Discord conversation.
 
